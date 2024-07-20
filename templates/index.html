@@ -20,10 +20,18 @@
     <button id="rejectButton">Reject</button>
     <button id="applyButton">Apply</button>
 
+    <select id="resumeSelect">
+        {% for resume in allResumes %}
+            <option value="{{ resume }}">{{ resume }}</option>
+        {% endfor %}
+    </select>
+
     <script>
         $(document).ready(function() {
             function updateJob(action) {
-                $.post("/", { action: action }, function(data) {
+                const selectedResume = $("#resumeSelect").val();
+                console.log(selectedResume);
+                $.post("/", { action: action, resume: selectedResume }, function(data) {
                     $("#jobDetails").html(
                         `<p><strong>Title:</strong> ${data.title}</p>
                          <p><strong>Location:</strong> ${data.location}</p>

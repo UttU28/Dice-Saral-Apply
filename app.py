@@ -1,4 +1,4 @@
-import json
+import json, os
 from flask import Flask, render_template, request, jsonify
 from applyJob import *
 
@@ -6,6 +6,9 @@ app = Flask(__name__)
 
 with open('jobData.json', 'r') as file:
     jobData = json.load(file)
+
+directory = 'allResume'
+allResumes = [filename for filename in os.listdir(directory) if filename.endswith('.pdf')]
 
 jobList = list(jobData.items())
 current_index = 0
@@ -25,6 +28,7 @@ def home():
     
     if request.method == "POST":
         action = request.form.get("action")
+        selected_resume = request.form.get("resume")
         
         if action == "next":
             current_index += 1
@@ -39,7 +43,7 @@ def home():
         elif action in ["reject", "apply"]:
             jobID, jobDetails = jobList[current_index]
             if action == "apply":
-                jobDetails["isApplied"] = applyDice(jobID)
+                jobDetails["isApplied"] = applyDice(jobID, selected_resume)
             else:
                 jobDetails["isApplied"] = False 
             jobData[jobID] = jobDetails
@@ -59,7 +63,7 @@ def home():
     
     jobID, jobDetails = find_next_job()
     if jobID and jobDetails:
-        return render_template("index.html", jobDetails=jobDetails)
+        return render_template("index.html", jobDetails=jobDetails, allResumes=allResumes)
     else:
         return render_template("comeLater.html")
 

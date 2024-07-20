@@ -9,6 +9,16 @@ import pyautogui
 
 driver = None
 
+def clickTheDamnButton(konsa, kitnaSona):
+    screen_width, screen_height = pyautogui.size()
+    region = (screen_width // 2, 0, screen_width, screen_height)
+    location = pyautogui.locateOnScreen('images/'+konsa+'.png', region=region, confidence=0.8)  # Adjust confidence as needed
+    if location is not None:
+        center = pyautogui.center(location)
+        pyautogui.moveTo(center.x, center.y)
+        pyautogui.click()
+        sleep(kitnaSona)
+
 def loadChrome():
     global driver
     chrome_driver_path = 'C:/chromeDriver/chromedriver.exe'  # Ensure the path is correct
@@ -27,44 +37,53 @@ def loadChrome():
     
     return driver  # Return the driver instance
 
-def applyDice(jobID):
+def applyDice(jobID, selectedResume):
     global driver
-
-    if driver is None:
-        raise ValueError("Driver is not initialized. Call loadChrome() first.")
+    if driver is None: raise ValueError("Driver is not initialized. Call loadChrome() first.")
     
     driver.get(f"https://www.dice.com/job-detail/{jobID}")
-    
-    
-    # Use explicit wait to wait for the "Easy apply" button to be present
+    sleep(7)
     try:
-        screen_width, screen_height = pyautogui.size()
-        region = (screen_width // 2, 0, screen_width // 2, screen_height)
-        image_path = 'apply.png'  # Replace with the path to your image file
-        location = pyautogui.locateOnScreen(image_path, region=region, confidence=0.8)  # Adjust confidence as needed
+        clickTheDamnButton('apply',3)
+        clickTheDamnButton('replaceResume',2)
 
-        if location is not None:
-            center = pyautogui.center(location)
-            pyautogui.moveTo(center.x, center.y)
-            pyautogui.click()
-            print("Clicked on the image.")
-        else:
-            print("Image not found in the specified region.")
-        easy_apply_button = WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'apply-button.job-app'))
-        )
-        easy_apply_button.click()
+        pyautogui.click()
+        sleep(0.8)
+        pyautogui.hotkey('ctrl','l')
+        sleep(0.8)
+        pyautogui.typewrite('C:/Users/iandm/Desktop/Dice-Saral-Apply/allResume')
+        sleep(0.8)
+        pyautogui.press('enter')
+        sleep(0.8)
+        for i in range(6):
+            pyautogui.press('tab')
+            sleep(0.2)
+        sleep(0.5)
+        pyautogui.typewrite(selectedResume)
+        sleep(0.5)
+        pyautogui.press('enter')
+        sleep(1)
+
+        # clickTheDamnButton('upload',5)
+        # clickTheDamnButton('next',5)
+        screen_width, screen_height = pyautogui.size()
+        region = (screen_width // 2, 0, screen_width, screen_height)
+        pyautogui.click(screen_width//2,screen_height//2)
+        sleep(0.2)
+        pyautogui.press(['tab']*3)
+        pyautogui.press('enter')
+        sleep(3.5)
+        clickTheDamnButton('next',1)
+        location = pyautogui.locateOnScreen('images/submit.png', region=region, confidence=0.8)
+        pyautogui.moveTo(location)
+
         print("Clicked the 'Easy apply' button")
     except Exception as e:
         print(f"Error clicking 'Easy apply' button: {e}")
         return False
     
-    # Wait for some time to ensure the page is fully loaded
-    sleep(5)
-    
-    # Print the page source
-    print(driver.page_source)
 
 if __name__ == "__main__":
     loadChrome()  # Initialize the driver
     applyDice("cf9902a8-235b-4adb-a9d0-6f1c25688174")  # Use the driver to apply for a job
+    applyDice("d6f03c2e-1197-4d79-bc91-0d83e08aa33b")  # Use the driver to apply for a job
