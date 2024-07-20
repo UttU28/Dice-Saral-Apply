@@ -19,5 +19,5 @@ def getJobDescription(jobID):
     jobDescription = data["props"]["pageProps"]["initialState"]["api"]["queries"][f'getJobById("{jobID}")']["data"]["description"]
     jobDescription = BeautifulSoup(jobDescription, 'html.parser').prettify()
     jobDescription = BeautifulSoup(jobDescription, 'html.parser').get_text().split("\n")
-    jobDescription = " \n".join([element for element in jobDescription if element != ''])
+    jobDescription = " \n".join([element.strip() for element in jobDescription if element != ''])
     return jobDescription
