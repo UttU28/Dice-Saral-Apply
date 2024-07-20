@@ -1,6 +1,5 @@
 import subprocess
 from time import sleep
-import time
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -10,8 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 import json, os
-import pyperclip
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 # Custom Library
 from jobDescription import getJobDescription
@@ -56,35 +55,30 @@ def writeTheJob(jobJson):
     else:
         jobsData = {}
 
-    if jobID in jobsData:
-        print("ID already exists. Skipping update.")
-    else:
+    if jobID not in jobsData:
+        jobDescription = getJobDescription(jobID)
+        jobJson["description"] = jobDescription or ''
         jobsData[jobID] = jobJson
         with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile:
             json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
 if __name__ == "__main__":
     totalPages = loadThePage(driver)
-    # BASIC SETUP FOR FIRST TIME LOADING
 
     print("Done herer")
     pageSource = driver.page_source
     soup = BeautifulSoup(pageSource, 'html.parser')
 
     exampleElements = soup.select('div.card.search-card')
-    for exampleElement in exampleElements:
+    for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
         jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
         jobLocation = exampleElement.select('span.search-result-location')[0].text.strip()
         jobTitle = exampleElement.select('a.card-title-link')[0].text.strip()
         jobCompany = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-        jobDescription = getJobDescription(jobID)
-
-        if not jobDescription: continue
         job = {
             "title": jobTitle,
             "location": jobLocation,
             "company": jobCompany,
-            "description": jobDescription,
             "link": f"https://www.dice.com/job-detail/{jobID}",
             "isApplied": False,
         }

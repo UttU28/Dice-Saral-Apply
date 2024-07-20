@@ -25,8 +25,11 @@ else:
 soup = BeautifulSoup(htmlContent, 'html.parser')
 scriptTag = soup.select('script#__NEXT_DATA__')[0].text
 data = json.loads(scriptTag)
-print(data)
 
-# print(data["props"]["pageProps"]["initialState"]["api"]["queries"]['getJobById("e1322a6c-4ac4-4e69-8b1a-f3a7c4c6b1e7")']["data"]["description"])
+jobDescription = data["props"]["pageProps"]["initialState"]["api"]["queries"]['getJobById("e1322a6c-4ac4-4e69-8b1a-f3a7c4c6b1e7")']["data"]["description"]
 # print_keys_tree(data["props"]["pageProps"]["initialState"]["api"]["queries"]['getJobById("e1322a6c-4ac4-4e69-8b1a-f3a7c4c6b1e7")']['data']['description'])
-
+jobDescription = BeautifulSoup(jobDescription, 'html.parser').prettify()
+jobDescription = BeautifulSoup(jobDescription, 'html.parser').get_text().split("\n")
+jobDescription = [element for element in jobDescription if element != '']
+jobDescription = " \n".join(jobDescription)
+print(jobDescription)
