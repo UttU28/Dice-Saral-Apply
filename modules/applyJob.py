@@ -44,6 +44,14 @@ def applyDice(jobID, selectedResume):
     driver.get(f"https://www.dice.com/job-detail/{jobID}")
     sleep(7)
     try:
+        print(driver.execute_script("return document.body.innerHTML"))
+        button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn.btn-primary'))
+        )
+        
+        # Click the button
+        button.click()
+        exit()
         clickTheDamnButton('apply',3)
         clickTheDamnButton('replaceResume',2)
 
@@ -76,6 +84,7 @@ def applyDice(jobID, selectedResume):
         clickTheDamnButton('next',1)
         location = pyautogui.locateOnScreen('images/submit.png', region=region, confidence=0.8)
         pyautogui.moveTo(location)
+
 
         print("Clicked the 'Easy apply' button")
     except Exception as e:
