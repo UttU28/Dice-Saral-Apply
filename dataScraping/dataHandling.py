@@ -10,13 +10,10 @@ def addNewJobSQL(jobID, title, location, company, description, datePosted, dateU
         conn = odbc.connect(connectionString)
         cursor = conn.cursor()
         
-        # Prepared statement with placeholders
         sql = '''
             INSERT INTO allData (id, title, location, company, description, datePosted, dateUpdated, myStatus, decisionTime) 
             VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NULL);
         '''
-        
-        # Parameters to be bound to the placeholders
         params = (jobID, title, location, company, description, datePosted, dateUpdated)
         
         cursor.execute(sql, params)
