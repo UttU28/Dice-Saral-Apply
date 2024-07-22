@@ -21,16 +21,16 @@ def fetchTheQueue():
         conn = odbc.connect(connectionString)
         cursor = conn.cursor()
         query = """
-            SELECT allData.id, applyQueue.selectedResume, applyQueue.timeOfArrival 
-            FROM applyQueue 
-            JOIN allData ON applyQueue.id = allData.id 
-            ORDER BY applyQueue.timeOfArrival ASC
+            SELECT allData.id, allData.title, allData.description, allData.company, myQueue.timeOfArrival 
+            FROM myQueue 
+            JOIN allData ON myQueue.id = allData.id 
+            ORDER BY myQueue.timeOfArrival ASC
         """
         cursor.execute(query)
         rows = cursor.fetchall()
         jobQueue = []
         for row in rows:
-            data_dict = {'id': row[0],'selectedResume': row[1],'timeOfArrival': str(row[2])}
+            data_dict = {'id': row[0],'title': row[1],'description': row[2],'company': row[3],'timeOfArrival': str(row[4])}
             jobQueue.append(data_dict)
         cursor.close()
         conn.close()
@@ -72,6 +72,31 @@ def getResumeList():
     return resumeData
 
 
+@app.route("/", methods=["GET", "POST"])
+def home():
+    global jobQueue
+    global resumeData
+
+    if request.method == "POST":
+        jobID = request.form.get("job_id")
+        action = request.form.get("action")
+        
+        if action == "apply":
+            resumeID = request.form.get("resume_id")
+            print(jobID, action, resumeID)
+            addToApplyQueue(jobID, resumeID)
+            # removeFromQueue(jobID)
+        elif action == "deny":
+            print(jobID, action)
+            # removeFromQueue(jobID)
+
+        jobQueue = [job for job in jobQueue if job['id'] != jobID]
+
+    if not jobQueue: jobQueue = fetchTheQueue()
+    if resumeData == {}: resumeData = getResumeList()
+    if not jobQueue: return render_template("jobNotFound.html")
+
+    return render_template("index.html", jobData=jobQueue[0], resumeData=resumeData)
 
 if __name__ == "__main__":
-    print(fetchTheQueue())
+    app.run(host="0.0.0.0", port=5500)

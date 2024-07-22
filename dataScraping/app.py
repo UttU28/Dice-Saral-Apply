@@ -49,7 +49,7 @@ def loadThePage(funDriver):
     funDriver.execute_script("window.scrollTo(0, 0);")
     return totalPages
 
-def writeTheJob(jobID, location, title, company):
+def writeTheJob(jobID, title, location, company):
     jsonFilePath = 'jobData.json'
     if os.path.exists(jsonFilePath):
         with open(jsonFilePath, 'r', encoding='utf-8') as jsonFile:
@@ -59,7 +59,7 @@ def writeTheJob(jobID, location, title, company):
     if jobID not in jobsData:
         jobsData[jobID] = int(datetime.now(timezone.utc).timestamp())
         description, datePosted, dateUpdated = getJobDescription(jobID)
-        addNewJobSQL(jobID, location, title, company, description, datePosted, dateUpdated)
+        addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
         with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile:
             json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
@@ -77,6 +77,6 @@ if __name__ == "__main__":
             location = exampleElement.select('span.search-result-location')[0].text.strip()
             title = exampleElement.select('a.card-title-link')[0].text.strip()
             company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-            writeTheJob(jobID, location, title, company)
+            writeTheJob(jobID, title, location, company)
 
     driver.quit()

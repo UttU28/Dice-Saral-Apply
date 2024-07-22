@@ -1,5 +1,6 @@
 import pypyodbc as odbc
 from credential import username, password
+from datetime import datetime, timezone
 
 server = 'dice-sql.database.windows.net'
 database = 'dice_sql_database'
@@ -15,10 +16,18 @@ def addNewJobSQL(jobID, title, location, company, description, datePosted, dateU
             VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NULL);
         '''
         params = (jobID, title, location, company, description, datePosted, dateUpdated)
-        
         cursor.execute(sql, params)
+
+        timestamp = int(datetime.now(timezone.utc).timestamp())
+        sql = '''
+            INSERT INTO myQueue (id, title, timeOfArrival) 
+            VALUES (?, ?, ?);
+        '''
+        params = (jobID, title, timestamp)
+        cursor.execute(sql, params)
+        
         conn.commit()
-        print(f"Data inserted successfully for {jobID}")
+        # print(f"Data inserted successfully for {jobID}")
     except odbc.Error as e:
         print("Error occurred while inserting data: ", e, jobID, title)
     finally:

@@ -48,10 +48,8 @@ def applyDice(jobID, selectedResume):
         button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn.btn-primary'))
         )
-        
-        # Click the button
         button.click()
-        exit()
+
         clickTheDamnButton('apply',3)
         clickTheDamnButton('replaceResume',2)
 
