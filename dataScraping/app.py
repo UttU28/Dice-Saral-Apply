@@ -40,9 +40,9 @@ def loadThePage(funDriver):
     totalPages = funDriver.find_element(By.CLASS_NAME, "pagination")
     totalPages = totalPages.find_elements(By.TAG_NAME, "li")
     totalPages = len(totalPages) - 2
-    # todayButton = WebDriverWait(funDriver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-cy='posted-date-option' and @data-cy-index='1']")))
-    # todayButton.click()
-    # sleep(2)
+    todayButton = WebDriverWait(funDriver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-cy='posted-date-option' and @data-cy-index='1']")))
+    todayButton.click()
+    sleep(2)
     contractsButton = funDriver.find_element(By.XPATH, "//li[@data-cy='facet-group-option' and @data-cy-value='CONTRACTS']").find_element(By.XPATH, ".//button")
     contractsButton.click()
     sleep(2)
