@@ -6,3 +6,4 @@ pyautogui
 flask
 pypyodbc
 schedule
+opencv-python
