@@ -1,12 +1,12 @@
 -- select * from allData;
 -- select * from myQueue;
--- delete from allData;
--- delete from applyQueue;
--- delete from myQueue;
--- delete from resumeList;
+-- drop table applyQueue;
+-- drop table myQueue;
+-- drop table resumeList;
+-- drop table allData;
 -- truncate TABLE resumeList;
 -- select * from resumeList;
-select * from applyQueue;
+-- select * from applyQueue;
 -- select * from myQueue;
 
 -- QUERY TO SHOW ALL THE MYQUEUE DATA

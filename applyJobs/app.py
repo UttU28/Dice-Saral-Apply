@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from credential import *
 from datetime import datetime, timezone
 
+from applyJob import *
+
 app = Flask(__name__)
 
 server = 'dice-sql.database.windows.net'
@@ -39,27 +41,28 @@ def fetchTheQueue():
 def removeFromQueue(jobID):
     conn = odbc.connect(connectionString)
     cursor = conn.cursor()
-    query = f"DELETE FROM myQueue WHERE id = '{jobID}'"
+    query = f"DELETE FROM applyQueue WHERE id = '{jobID}'"
+    cursor.execute(query)
+    conn.commit()
+    print("Job Removed form Apply Queue")
+    cursor.close()
+    conn.close()
+
+def updateTheJob(jobID, applyStatus):
+    conn = odbc.connect(connectionString)
+    cursor = conn.cursor()
+    timestamp = int(datetime.now(timezone.utc).timestamp())
+    query = f"""
+        UPDATE allData
+        SET myStatus = '{applyStatus}', decisionTime = {timestamp}
+        WHERE id = '{jobID}';
+    """
     cursor.execute(query)
     conn.commit()
     cursor.close()
     conn.close()
 
-def addToApplyQueue(jobID, selectedResume):
-    conn = odbc.connect(connectionString)
-    cursor = conn.cursor()
-    timestamp = int(datetime.now(timezone.utc).timestamp())
-    query = """
-        INSERT INTO applyQueue (id, timeOfArrival, selectedResume)
-        VALUES (?, ?, ?)
-    """
-    params = (jobID, timestamp, selectedResume)
-    cursor.execute(query, params)
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-def getResumeList():
+def fetchResumeList():
     global resumeData
     conn = odbc.connect(connectionString)
     cursor = conn.cursor()
@@ -74,4 +77,13 @@ def getResumeList():
 
 
 if __name__ == "__main__":
-    print(fetchTheQueue())
+    try: loadChrome()
+    except: pass
+    jobQueue = fetchTheQueue()
+    resumeData = fetchResumeList()
+    for thisJob in jobQueue:
+        jobID = thisJob['id']
+        selectedResume = resumeData.get(thisJob['selectedResume'])
+        applyStatus = applyDice(jobID, selectedResume)
+        removeFromQueue(jobID)
+        updateTheJob(jobID, applyStatus)
