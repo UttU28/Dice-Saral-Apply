@@ -15,7 +15,7 @@ import schedule
 from jobDescription import *
 from dataHandling import *
 
-def scrape_and_process_jobs():
+def scrapeTheJobs():
     def loadThePage(funDriver):
         selectElement = Select(WebDriverWait(funDriver, 10).until(EC.presence_of_element_located((By.ID, "pageSize_2"))))
         selectElement.select_by_value("100")
@@ -47,10 +47,10 @@ def scrape_and_process_jobs():
                 json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
     chrome_driver_path = 'C:/chromeDriver'
-    chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=8989', '--user-data-dir=C:/chromeDriver/diceData/'])
+    chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=9001', '--user-data-dir=C:/chromeDriver/diceData/'])
     sleep(2)
     options = Options()
-    options.add_experimental_option("debuggerAddress", "localhost:8989")
+    options.add_experimental_option("debuggerAddress", "localhost:9001")
     options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
     options.add_argument("--disable-notifications")
     driver = webdriver.Chrome(options=options)
@@ -74,8 +74,8 @@ def scrape_and_process_jobs():
 
 
 if __name__ == "__main__":
-    scrape_and_process_jobs()
-    schedule.every(15).minutes.do(scrape_and_process_jobs)
+    scrapeTheJobs()
+    schedule.every(15).minutes.do(scrapeTheJobs)
 
     while True:
         schedule.run_pending()

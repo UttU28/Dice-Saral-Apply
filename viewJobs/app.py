@@ -85,10 +85,9 @@ def home():
             resumeID = request.form.get("resume_id")
             print(jobID, action, resumeID)
             addToApplyQueue(jobID, resumeID)
-            # removeFromQueue(jobID)
         elif action == "deny":
             print(jobID, action)
-            # removeFromQueue(jobID)
+        removeFromQueue(jobID)
 
         jobQueue = [job for job in jobQueue if job['id'] != jobID]
 

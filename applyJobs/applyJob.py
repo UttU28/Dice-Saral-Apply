@@ -33,12 +33,10 @@ def clickTheDamnButton(imageName, sleepTime, max_search_time=10, search_interval
 def loadChrome():
     global driver
     chrome_driver_path = 'C:/chromeDriver/chromedriver.exe'  # Ensure the path is correct
-    subprocess.Popen(['C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', 
-                      '--remote-debugging-port=8989', 
-                      '--user-data-dir=C:/chromeDriver/diceData/'])
+    chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=9002', '--user-data-dir=C:/chromeDriver/diceData/'])
     time.sleep(2)
     options = Options()
-    options.add_experimental_option("debuggerAddress", "localhost:8989")
+    options.add_experimental_option("debuggerAddress", "localhost:9002")
     options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
     options.add_argument("--disable-notifications")
     driver = webdriver.Chrome(options=options)

@@ -9,6 +9,9 @@
 -- select * from applyQueue;
 -- select * from myQueue;
 
+select count(*) from myQueue;
+select count(*) from applyQueue;
+
 -- QUERY TO SHOW ALL THE MYQUEUE DATA
 -- select allData.id, allData.title, myQueue.timeOfArrival from allData JOIN myQueue ON allData.id = myQueue.id ORDER BY myQueue.timeOfArrival ASC;
 -- SELECT COUNT(*) FROM allData JOIN myQueue ON allData.id = myQueue.id;
