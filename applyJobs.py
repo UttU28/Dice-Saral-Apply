@@ -118,7 +118,8 @@ def applyTheJobs():
             sleep(3.5)
             clickTheDamnButton('next', 1)
             location = pyautogui.locateOnScreen('images/submit.png', region=region, confidence=0.8)
-            pyautogui.moveTo(location)
+            pyautogui.click(location)
+            sleep(2)
             return 'applied'
 
         except Exception as e:
