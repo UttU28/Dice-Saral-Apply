@@ -15,33 +15,9 @@ import schedule
 from dataScraping.jobDescription import *
 from dataScraping.dataHandling import *
 
-queryList = []
 
 def scrapeTheJobs():
-    global queryList
-    def doDatabaseThing(queryList):
-        retries = 2 
-        failed_queries = []
-
-        success = executeAllSQL(queryList)
-        if not success:
-            for _ in range(retries):
-                print(f"Retrying SQL: {queryList}")
-                success = executeAllSQL(queryList)
-                if success: break
-            if not success: failed_queries.append(queryList)
-
-        if failed_queries: saveFailed(failed_queries)
-
-    def saveFailed(data):
-        timestamp = int(datetime.now(timezone.utc).timestamp()) 
-        filename = f"failed_queries_{timestamp}.json"
-        with open(filename, 'w') as f:
-            json.dump(data, f, indent=4)
-        print(f"Failed queries saved to {filename}")
-
     def writeTheJob(jobID, title, location, company):
-        global queryList
         jsonFilePath = 'jobData.json'
         if os.path.exists(jsonFilePath):
             with open(jsonFilePath, 'r', encoding='utf-8') as jsonFile:
@@ -51,7 +27,7 @@ def scrapeTheJobs():
         if jobID not in jobsData:
             jobsData[jobID] = int(datetime.now(timezone.utc).timestamp())
             description, datePosted, dateUpdated = getJobDescription(jobID)
-            queryList.append((jobID, title, location, company, description, datePosted, dateUpdated))
+            addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
             with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile:
                 json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
@@ -77,8 +53,7 @@ def scrapeTheJobs():
         jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
 
         for jobKeyWord in jobKeyWords:
-            queryList = []
-            driver.get(f"https://www.dice.com/jobs?q={jobKeyWord}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
+            driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
 
             pageSource = driver.page_source
             soup = BeautifulSoup(pageSource, 'html.parser')
@@ -92,7 +67,6 @@ def scrapeTheJobs():
                     company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
                     writeTheJob(jobID, title, location, company)
 
-            doDatabaseThing(queryList)
         driver.quit()
         # chromeApp.terminate()
     except: print("\nSome error, look at next time")
