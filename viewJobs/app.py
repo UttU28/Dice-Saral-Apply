@@ -8,7 +8,7 @@ app = Flask(__name__)
 server = 'dice-sql.database.windows.net'
 database = 'dice_sql_database'
 
-# Define the connection pool
+# Define the connection pool - Ensure parameters are correctly specified
 conn_pool = odbc.pooling.SimpleConnectionPool(
     1, 10, driver='{ODBC Driver 18 for SQL Server}',
     server='tcp:dice-sql.database.windows.net,1433',
@@ -86,12 +86,16 @@ def home():
         removeFromQueue(jobID)
         jobQueue = [job for job in jobQueue if job['id'] != jobID]
 
-    if not jobQueue: jobQueue = fetchTheQueue()
-    if not resumeData: resumeData = getResumeList()
-    if not jobQueue: return render_template("jobNotFound.html")
+    if not jobQueue:
+        jobQueue = fetchTheQueue()
+    if not resumeData:
+        resumeData = getResumeList()
+    if not jobQueue:
+        return render_template("jobNotFound.html")
 
     return render_template("index.html", jobData=jobQueue[0], resumeData=resumeData)
 
 if __name__ == "__main__":
-    # app.run(host="0.0.0.0", port=5500)
-    app.run()
+    app.run(host="0.0.0.0", port=5500)
+
+    # app.run()
