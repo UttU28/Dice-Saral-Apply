@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from playTime import *
+from dataScraping.playTime import *
 
 def getJobDescription(jobID):
     url = f"https://www.dice.com/job-detail/{jobID}"

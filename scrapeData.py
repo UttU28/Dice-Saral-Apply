@@ -12,8 +12,8 @@ from tqdm import tqdm
 import schedule
 
 # Custom Library Imports - Ensure these paths are correct based on your project structure
-from jobDescription import *
-from dataHandling import *
+from dataScraping.jobDescription import *
+from dataScraping.dataHandling import *
 
 def scrapeTheJobs():
     def loadThePage(funDriver):
@@ -76,8 +76,8 @@ def scrapeTheJobs():
 
 if __name__ == "__main__":
     scrapeTheJobs()
-    schedule.every(15).minutes.do(scrapeTheJobs)
+    # schedule.every(15).minutes.do(scrapeTheJobs)
 
-    while True:
-        schedule.run_pending()
-        sleep(1)
+    # while True:
+    #     schedule.run_pending()
+    #     sleep(1)

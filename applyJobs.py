@@ -14,7 +14,7 @@ database = 'dice_sql_database'
 
 connectionString = f'Driver={{ODBC Driver 18 for SQL Server}};Server=tcp:{server},1433;Database={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
 
-def applyTheJob():
+def applyTheJobs():
     def fetchTheQueue(conn):
         cursor = conn.cursor()
         query = """
@@ -152,9 +152,9 @@ def applyTheJob():
 
 
 if __name__ == "__main__":
-    applyTheJob()
-    schedule.every(15).minutes.do(applyTheJob)
+    applyTheJobs()
+    # schedule.every(15).minutes.do(applyTheJobs)
 
-    while True:
-        schedule.run_pending()
-        sleep(1)
+    # while True:
+    #     schedule.run_pending()
+    #     sleep(1)
