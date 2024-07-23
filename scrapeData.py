@@ -15,24 +15,33 @@ import schedule
 from dataScraping.jobDescription import *
 from dataScraping.dataHandling import *
 
+queryList = []
+
 def scrapeTheJobs():
-    def loadThePage(funDriver):
-        selectElement = Select(WebDriverWait(funDriver, 10).until(EC.presence_of_element_located((By.ID, "pageSize_2"))))
-        selectElement.select_by_value("100")
-        sleep(5)
-        totalPages = funDriver.find_element(By.CLASS_NAME, "pagination")
-        totalPages = totalPages.find_elements(By.TAG_NAME, "li")
-        totalPages = len(totalPages) - 2
-        todayButton = WebDriverWait(funDriver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@data-cy='posted-date-option' and @data-cy-index='1']")))
-        todayButton.click()
-        sleep(2)
-        contractsButton = funDriver.find_element(By.XPATH, "//li[@data-cy='facet-group-option' and @data-cy-value='CONTRACTS']").find_element(By.XPATH, ".//button")
-        contractsButton.click()
-        sleep(2)
-        funDriver.execute_script("window.scrollTo(0, 0);")
-        return totalPages
+    global queryList
+    def doDatabaseThing(queryList):
+        retries = 2 
+        failed_queries = []
+
+        success = executeAllSQL(queryList)
+        if not success:
+            for _ in range(retries):
+                print(f"Retrying SQL: {queryList}")
+                success = executeAllSQL(queryList)
+                if success: break
+            if not success: failed_queries.append(queryList)
+
+        if failed_queries: saveFailed(failed_queries)
+
+    def saveFailed(data):
+        timestamp = int(datetime.now(timezone.utc).timestamp()) 
+        filename = f"failed_queries_{timestamp}.json"
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=4)
+        print(f"Failed queries saved to {filename}")
 
     def writeTheJob(jobID, title, location, company):
+        global queryList
         jsonFilePath = 'jobData.json'
         if os.path.exists(jsonFilePath):
             with open(jsonFilePath, 'r', encoding='utf-8') as jsonFile:
@@ -42,36 +51,50 @@ def scrapeTheJobs():
         if jobID not in jobsData:
             jobsData[jobID] = int(datetime.now(timezone.utc).timestamp())
             description, datePosted, dateUpdated = getJobDescription(jobID)
-            addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
+            queryList.append((jobID, title, location, company, description, datePosted, dateUpdated))
             with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile:
                 json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
     try:
         chrome_driver_path = 'C:/chromeDriver'
-        chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=9001', '--user-data-dir=C:/chromeDriver/diceData/'])
-        sleep(2)
+        # chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=9001', '--user-data-dir=C:/chromeDriver/diceData/'])
+        # sleep(2)
+        # options = Options()
+        # options.add_experimental_option("debuggerAddress", "localhost:9001")
+        # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+        # options.add_argument("--disable-notifications")
+        # driver = webdriver.Chrome(options=options)
+
         options = Options()
-        options.add_experimental_option("debuggerAddress", "localhost:9001")
-        options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+        options.headless = True
         options.add_argument("--disable-notifications")
+        options.add_argument("--incognito")
+        options.add_argument("--disable-popup-blocking")  # Disable popup blocking
+        options.add_argument("--disable-infobars")  
+        options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
         driver = webdriver.Chrome(options=options)
 
-        driver.get("https://www.dice.com/jobs?q=python&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&language=en&jobSavedSearchId=a35866ec-a689-44de-8b57-29d44ca98f74")
+        jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
 
-        totalPages = loadThePage(driver)
-        pageSource = driver.page_source
-        soup = BeautifulSoup(pageSource, 'html.parser')
+        for jobKeyWord in jobKeyWords:
+            queryList = []
+            driver.get(f"https://www.dice.com/jobs?q={jobKeyWord}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
+
+            pageSource = driver.page_source
+            soup = BeautifulSoup(pageSource, 'html.parser')
+
+            exampleElements = soup.select('div.card.search-card')
+            for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+                if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
+                    jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
+                    location = exampleElement.select('span.search-result-location')[0].text.strip()
+                    title = exampleElement.select('a.card-title-link')[0].text.strip()
+                    company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
+                    writeTheJob(jobID, title, location, company)
+
+            doDatabaseThing(queryList)
         driver.quit()
-        chromeApp.terminate()
-
-        exampleElements = soup.select('div.card.search-card')
-        for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
-            if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
-                jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
-                location = exampleElement.select('span.search-result-location')[0].text.strip()
-                title = exampleElement.select('a.card-title-link')[0].text.strip()
-                company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-                writeTheJob(jobID, title, location, company)
+        # chromeApp.terminate()
     except: print("\nSome error, look at next time")
 
 if __name__ == "__main__":

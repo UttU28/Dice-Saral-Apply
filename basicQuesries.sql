@@ -9,7 +9,9 @@
 -- select * from applyQueue;
 -- select * from myQueue;
 
-delete from myQueue;
+-- delete from myQueue;
+-- select * from myQueue;
+select * from applyQueue;
 select count(*) from myQueue;
 select count(*) from applyQueue;
 

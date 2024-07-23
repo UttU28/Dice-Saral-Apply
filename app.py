@@ -5,7 +5,7 @@ from applyJobs import applyTheJobs
 
 def job():
     applyTheJobs()
-    sleep(5 * 60)
+    sleep(1 * 60)
     scrapeTheJobs()
 
 job()
