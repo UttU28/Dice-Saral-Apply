@@ -33,13 +33,6 @@ def scrapeTheJobs():
 
     try:
         chrome_driver_path = 'C:/chromeDriver'
-        # chromeApp = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe', '--remote-debugging-port=9001', '--user-data-dir=C:/chromeDriver/diceData/'])
-        # sleep(2)
-        # options = Options()
-        # options.add_experimental_option("debuggerAddress", "localhost:9001")
-        # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
-        # options.add_argument("--disable-notifications")
-        # driver = webdriver.Chrome(options=options)
 
         options = Options()
         options.headless = True
@@ -51,24 +44,30 @@ def scrapeTheJobs():
         driver = webdriver.Chrome(options=options)
 
         jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
-
+        exampleElements = []
+        
         for jobKeyWord in jobKeyWords:
+            print(jobKeyWord.replace(' ','%20'))
             driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
-
+            try:
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
+            except Exception as e:
+                print(f"Exception occurred while waiting: {str(e)}")
+            sleep(1)
             pageSource = driver.page_source
             soup = BeautifulSoup(pageSource, 'html.parser')
 
-            exampleElements = soup.select('div.card.search-card')
-            for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
-                if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
-                    jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
-                    location = exampleElement.select('span.search-result-location')[0].text.strip()
-                    title = exampleElement.select('a.card-title-link')[0].text.strip()
-                    company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-                    writeTheJob(jobID, title, location, company)
+            exampleElements.extend(soup.select('div.card.search-card'))
 
         driver.quit()
-        # chromeApp.terminate()
+
+        for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+            if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
+                jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
+                location = exampleElement.select('span.search-result-location')[0].text.strip()
+                title = exampleElement.select('a.card-title-link')[0].text.strip()
+                company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
+                writeTheJob(jobID, title, location, company)
     except: print("\nSome error, look at next time")
 
 if __name__ == "__main__":

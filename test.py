@@ -1,29 +1,27 @@
-import pypyodbc as odbc
-from credential import username, password
-from datetime import datetime, timezone
+import requests
+from bs4 import BeautifulSoup
+from time import sleep
 
-server = 'dice-sql.database.windows.net'
-database = 'dice_sql_database'
-connectionString = f'Driver={{ODBC Driver 18 for SQL Server}};Server=tcp:{server},1433;Database={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
+exampleElements = []
 
-def getMyQueue():
-    try:
-        conn = odbc.connect(connectionString)
-        cursor = conn.cursor()
-        
-        timestamp = int(datetime.now(timezone.utc).timestamp())
-        sql = '''
-            SELECT * FROM myQueue ORDER BY time;
-        '''
-        cursor.execute(sql)
-        
-        conn.commit()
-        # print(f"Data inserted successfully for {jobID}")
-    except odbc.Error as e:
-        print("Error occurred while inserting data: ", e)
-    finally:
-        cursor.close()
-        conn.close()
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
 
-# Example usage
-# addNewJobSQL('1d2013e7-baa2-4f99-bd47-36de708e00f5', 'DevOps Databricks Engineer - Azure @ Remote', 'US', 'Aroha Technologies', 'Position:1min (Workspaces, Unity Catalog, Volumes, Ext volumes, etc.)', 1721504740, 1721504740)
+for jobKeyWord in jobKeyWords:
+    formatted_keyword = jobKeyWord.replace(' ', '%20')
+    url = f"https://www.dice.com/jobs?q={formatted_keyword}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en"
+    
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        exampleElements.extend(soup.select('div.card.search-card'))
+    else:
+        print(f"Failed to fetch {url}")
+
+    sleep(4)  # Adding a delay to be respectful to the website's servers
+
+# Now exampleElements contains all the job card elements from the scraped pages
+print(f"Total job cards scraped: {len(exampleElements)}")

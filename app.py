@@ -4,8 +4,8 @@ from scrapeData import scrapeTheJobs
 from applyJobs import applyTheJobs
 
 def job():
-    applyTheJobs()
-    sleep(1 * 60)
+    # applyTheJobs()
+    # sleep(1 * 60)
     scrapeTheJobs()
 
 job()
