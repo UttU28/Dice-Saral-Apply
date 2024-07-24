@@ -1,7 +1,7 @@
 import schedule
 from time import sleep
 from scrapeData import scrapeTheJobs
-from applyJobs import applyTheJobs
+# from applyJobs import applyTheJobs
 
 def job():
     # applyTheJobs()
