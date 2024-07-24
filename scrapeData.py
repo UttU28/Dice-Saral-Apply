@@ -45,27 +45,31 @@ def scrapeTheJobs():
 
         if jobID not in rawData:
             jobsData[jobID] = int(datetime.now(timezone.utc).timestamp())
-            description, datePosted, dateUpdated = getJobDescription(jobID)
-            checkRequirements = checkRequirementMatching(description, contentIn, contentOut)
-            if checkRequirements:
-                addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
-                with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
-            with open(rawFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
+            jdData = getJobDescription(jobID)
+            if jdData:
+                description, datePosted, dateUpdated = jdData
+                checkRequirements = checkRequirementMatching(description, contentIn, contentOut)
+                if checkRequirements:
+                    addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
+                    with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
+            rawData[jobID] = int(datetime.now(timezone.utc).timestamp())
+            with open(rawFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(rawData, jsonFile, ensure_ascii=False, indent=4)
 
     chrome_driver_path = 'C:/chromeDriver'
 
     options = Options()
     # options.headless = True
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
     options.add_argument("--disable-notifications")
     options.add_argument("--incognito")
+    options.add_argument("--disable-dev-shm-usage")  # Disable popup blocking
     options.add_argument("--disable-popup-blocking")  # Disable popup blocking
     options.add_argument("--disable-infobars")  
-    options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+    # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
     driver = webdriver.Chrome(options=options)
 
     jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
-    jobKeyWords = ['DevOps']
     exampleElements = []
     
     for jobKeyWord in jobKeyWords:

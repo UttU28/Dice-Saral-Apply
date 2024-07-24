@@ -11,7 +11,7 @@ def getJobDescription(jobID):
         htmlContent = response.text
     else:
         print(f"Failed to retrieve the webpage. For: {url}, Status code: {response.status_code}")
-        return 0
+        return False
 
     soup = BeautifulSoup(htmlContent, 'html.parser')
     # print(soup)
