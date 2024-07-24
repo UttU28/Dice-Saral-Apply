@@ -57,43 +57,47 @@ def scrapeTheJobs():
 
     chrome_driver_path = 'C:/chromeDriver'
 
-    options = Options()
-    # options.headless = True
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-notifications")
-    options.add_argument("--incognito")
-    options.add_argument("--disable-dev-shm-usage")  # Disable popup blocking
-    options.add_argument("--disable-popup-blocking")  # Disable popup blocking
-    options.add_argument("--disable-infobars")  
-    # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
-    driver = webdriver.Chrome(options=options)
+    try:
+        options = Options()
+        # options.headless = True
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--incognito")
+        options.add_argument("--disable-dev-shm-usage")  # Disable popup blocking
+        options.add_argument("--disable-popup-blocking")  # Disable popup blocking
+        options.add_argument("--disable-infobars")  
+        # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+        driver = webdriver.Chrome(options=options)
 
-    jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
-    exampleElements = []
-    
-    for jobKeyWord in jobKeyWords:
-        print(jobKeyWord.replace(' ','%20'))
-        driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
-        try:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
-        except Exception as e:
-            print(f"Exception occurred while waiting: {str(e)}")
-        sleep(1)
-        pageSource = driver.page_source
-        soup = BeautifulSoup(pageSource, 'html.parser')
+        jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
+        exampleElements = []
+        
+        for jobKeyWord in jobKeyWords:
+            print(jobKeyWord.replace(' ','%20'))
+            driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
+            try:
+                print("Fetching Data")
+                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
+            except Exception as e:
+                print("Nai  Mila")
+                print(f"Exception occurred while waiting: {str(e)}")
+            sleep(1)
+            pageSource = driver.page_source
+            soup = BeautifulSoup(pageSource, 'html.parser')
 
-        exampleElements.extend(soup.select('div.card.search-card'))
+            exampleElements.extend(soup.select('div.card.search-card'))
 
-    driver.quit()
+        driver.quit()
 
-    for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
-        if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
-            jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
-            location = exampleElement.select('span.search-result-location')[0].text.strip()
-            title = exampleElement.select('a.card-title-link')[0].text.strip()
-            company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-            writeTheJob(jobID, title, location, company)
+        for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+            if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
+                jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
+                location = exampleElement.select('span.search-result-location')[0].text.strip()
+                title = exampleElement.select('a.card-title-link')[0].text.strip()
+                company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
+                writeTheJob(jobID, title, location, company)
+    except: print("Asuvidha k liye khed hai")
 
 if __name__ == "__main__":
     scrapeTheJobs()

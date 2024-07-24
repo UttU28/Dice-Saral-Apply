@@ -1,4 +1,4 @@
--- select * from allData;
+select * from allData;
 -- select * from myQueue;
 -- drop table applyQueue;
 -- drop table myQueue;
@@ -12,6 +12,7 @@
 -- delete from myQueue;
 -- select * from myQueue;
 select * from applyQueue;
+select count(*) from allData;
 select count(*) from myQueue;
 select count(*) from applyQueue;
 

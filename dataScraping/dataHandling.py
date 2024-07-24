@@ -15,7 +15,7 @@ def addNewJobSQL(jobID, title, location, company, description, datePosted, dateU
             INSERT INTO allData (id, title, location, company, description, datePosted, dateUpdated, myStatus, decisionTime) 
             VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', NULL);
         '''
-        params = (jobID, title, location, company, description, datePosted, dateUpdated)
+        params = (jobID, title, location, company, description.encode('utf-8'), datePosted, dateUpdated)
         cursor.execute(sql, params)
 
         timestamp = int(datetime.now(timezone.utc).timestamp())
@@ -29,7 +29,7 @@ def addNewJobSQL(jobID, title, location, company, description, datePosted, dateU
         conn.close()
         return True
         # print(f"Data inserted successfully for {jobID}")
-    except: return False
+    except: print("Error in Adding Data")
 
 # Example usage
 # executeAllSQL('1d2013e7-baa2-4f99-bd47-36de708e00f5', 'DevOps Databricks Engineer - Azure @ Remote', 'US', 'Aroha Technologies', 'Position:1min (Workspaces, Unity Catalog, Volumes, Ext volumes, etc.)', 1721504740, 1721504740)
