@@ -8,21 +8,19 @@ select COUNT(*) from myQueue;
 select COUNT(*) from applyQueue;
 select COUNT(*) from resumeList;
 
--- drop table applyQueue;
--- drop table myQueue;
--- drop table allData;
--- drop table resumeList;
+-- SAFE!! Delete Table DATA
+-- DELETE FROM applyQueue;
+-- DELETE FROM myQueue;
+-- DELETE FROM allData;
+-- DELETE FROM resumeList;
 
--- select * from resumeList;
--- select * from applyQueue;
--- select * from myQueue;
+-- LAVDA LAGI JASE!! Delete Whole TABLE
+-- DROP TABLE applyQueue;
+-- DROP TABLE myQueue;
+-- DROP TABLE allData;
+-- DROP TABLE resumeList;
 
--- delete from myQueue;
--- select * from myQueue;
--- select * from applyQueue;
--- select count(*) from allData;
--- select count(*) from myQueue;
--- select count(*) from applyQueue;
+
 
 -- QUERY TO SHOW ALL THE MYQUEUE DATA
 -- select allData.id, allData.title, myQueue.timeOfArrival from allData JOIN myQueue ON allData.id = myQueue.id ORDER BY myQueue.timeOfArrival ASC;
