@@ -81,7 +81,6 @@ def scrapeTheJobs():
                 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
             except Exception as e:
                 print("Nai  Mila")
-                print(f"Exception occurred while waiting: {str(e)}")
             sleep(1)
             pageSource = driver.page_source
             soup = BeautifulSoup(pageSource, 'html.parser')

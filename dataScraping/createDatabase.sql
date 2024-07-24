@@ -19,11 +19,11 @@ CREATE TABLE myQueue (
     FOREIGN KEY (id) REFERENCES allData(id)
 );
 
--- Create resumeList table
-CREATE TABLE resumeList (
-    resumeId INT PRIMARY KEY IDENTITY(1,1),
-    resumeName VARCHAR(255) NOT NULL
-);
+-- -- Create resumeList table
+-- CREATE TABLE resumeList (
+--     resumeId INT PRIMARY KEY IDENTITY(1,1),
+--     resumeName VARCHAR(255) NOT NULL
+-- );
 
 -- Create applyQueue table
 CREATE TABLE applyQueue (

@@ -1,20 +1,28 @@
-select * from allData;
+-- select * from allData;
 -- select * from myQueue;
+-- select * from applyQueue;
+-- select * from resumeList;
+
+select COUNT(*) from allData;
+select COUNT(*) from myQueue;
+select COUNT(*) from applyQueue;
+select COUNT(*) from resumeList;
+
 -- drop table applyQueue;
 -- drop table myQueue;
--- drop table resumeList;
 -- drop table allData;
--- truncate TABLE resumeList;
+-- drop table resumeList;
+
 -- select * from resumeList;
 -- select * from applyQueue;
 -- select * from myQueue;
 
 -- delete from myQueue;
 -- select * from myQueue;
-select * from applyQueue;
-select count(*) from allData;
-select count(*) from myQueue;
-select count(*) from applyQueue;
+-- select * from applyQueue;
+-- select count(*) from allData;
+-- select count(*) from myQueue;
+-- select count(*) from applyQueue;
 
 -- QUERY TO SHOW ALL THE MYQUEUE DATA
 -- select allData.id, allData.title, myQueue.timeOfArrival from allData JOIN myQueue ON allData.id = myQueue.id ORDER BY myQueue.timeOfArrival ASC;
