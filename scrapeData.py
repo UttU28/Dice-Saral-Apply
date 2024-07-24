@@ -31,9 +31,10 @@ def scrapeTheJobs():
 
     def writeTheJob(jobID, title, location, company):
         rawFilePath = 'rawData.json'
+        rawData, jobsData = {},{}
         if os.path.exists(rawFilePath):
             with open(rawFilePath, 'r', encoding='utf-8') as jsonFile:
-                jobsData = json.load(jsonFile)
+                rawData = json.load(jsonFile)
         else: rawData = {}
 
         jsonFilePath = 'jobData.json'
@@ -49,47 +50,46 @@ def scrapeTheJobs():
             if checkRequirements:
                 addNewJobSQL(jobID, title, location, company, description, datePosted, dateUpdated)
                 with open(jsonFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
-                with open(rawFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
+            with open(rawFilePath, 'w', encoding='utf-8') as jsonFile: json.dump(jobsData, jsonFile, ensure_ascii=False, indent=4)
 
-    try:
-        chrome_driver_path = 'C:/chromeDriver'
+    chrome_driver_path = 'C:/chromeDriver'
 
-        options = Options()
-        options.headless = True
-        options.add_argument("--headless")
-        options.add_argument("--disable-notifications")
-        options.add_argument("--incognito")
-        options.add_argument("--disable-popup-blocking")  # Disable popup blocking
-        options.add_argument("--disable-infobars")  
-        options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
-        driver = webdriver.Chrome(options=options)
+    options = Options()
+    # options.headless = True
+    # options.add_argument("--headless")
+    options.add_argument("--disable-notifications")
+    options.add_argument("--incognito")
+    options.add_argument("--disable-popup-blocking")  # Disable popup blocking
+    options.add_argument("--disable-infobars")  
+    options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+    driver = webdriver.Chrome(options=options)
 
-        jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
-        exampleElements = []
-        
-        for jobKeyWord in jobKeyWords:
-            print(jobKeyWord.replace(' ','%20'))
-            driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
-            try:
-                WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
-            except Exception as e:
-                print(f"Exception occurred while waiting: {str(e)}")
-            sleep(1)
-            pageSource = driver.page_source
-            soup = BeautifulSoup(pageSource, 'html.parser')
+    jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
+    jobKeyWords = ['DevOps']
+    exampleElements = []
+    
+    for jobKeyWord in jobKeyWords:
+        print(jobKeyWord.replace(' ','%20'))
+        driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
+        try:
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div.card.search-card')))
+        except Exception as e:
+            print(f"Exception occurred while waiting: {str(e)}")
+        sleep(1)
+        pageSource = driver.page_source
+        soup = BeautifulSoup(pageSource, 'html.parser')
 
-            exampleElements.extend(soup.select('div.card.search-card'))
+        exampleElements.extend(soup.select('div.card.search-card'))
 
-        driver.quit()
+    driver.quit()
 
-        for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
-            if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
-                jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
-                location = exampleElement.select('span.search-result-location')[0].text.strip()
-                title = exampleElement.select('a.card-title-link')[0].text.strip()
-                company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
-                writeTheJob(jobID, title, location, company)
-    except: print("\nSome error, look at next time")
+    for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+        if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
+            jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
+            location = exampleElement.select('span.search-result-location')[0].text.strip()
+            title = exampleElement.select('a.card-title-link')[0].text.strip()
+            company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
+            writeTheJob(jobID, title, location, company)
 
 if __name__ == "__main__":
     scrapeTheJobs()
