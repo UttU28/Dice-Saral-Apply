@@ -57,23 +57,23 @@ def scrapeTheJobs():
 
     chrome_driver_path = 'C:/chromeDriver'
 
-    try:
-        options = Options()
-        # options.headless = True
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-notifications")
-        options.add_argument("--incognito")
-        options.add_argument("--disable-dev-shm-usage")  # Disable popup blocking
-        options.add_argument("--disable-popup-blocking")  # Disable popup blocking
-        options.add_argument("--disable-infobars")  
-        # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
-        driver = webdriver.Chrome(options=options)
+    options = Options()
+    # options.headless = True
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-notifications")
+    options.add_argument("--incognito")
+    options.add_argument("--disable-dev-shm-usage")  # Disable popup blocking
+    options.add_argument("--disable-popup-blocking")  # Disable popup blocking
+    options.add_argument("--disable-infobars")  
+    # options.add_argument(f"webdriver.chrome.driver={chrome_driver_path}")
+    driver = webdriver.Chrome(options=options)
 
-        jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
-        exampleElements = []
-        
-        for jobKeyWord in jobKeyWords:
+    jobKeyWords = ['DevOps', 'Azure devops', 'azure data']
+    exampleElements = []
+    
+    for jobKeyWord in jobKeyWords:
+        try:
             print(jobKeyWord.replace(' ','%20'))
             driver.get(f"https://www.dice.com/jobs?q={jobKeyWord.replace(' ','%20')}&countryCode=US&radius=30&radiusUnit=mi&page=1&pageSize=100&filters.postedDate=ONE&filters.employmentType=CONTRACTS&filters.easyApply=true&language=en")
             try:
@@ -87,17 +87,19 @@ def scrapeTheJobs():
             soup = BeautifulSoup(pageSource, 'html.parser')
 
             exampleElements.extend(soup.select('div.card.search-card'))
+        except: print("Asuvidha k liye khed hai")
 
-        driver.quit()
+    driver.quit()
 
-        for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+    for exampleElement in tqdm(exampleElements, desc="Processing Jobs"):
+        try:
             if exampleElement.find('div', {'data-cy': 'card-easy-apply'}):
                 jobID = exampleElement.select('a.card-title-link')[0].get('id').strip()
                 location = exampleElement.select('span.search-result-location')[0].text.strip()
                 title = exampleElement.select('a.card-title-link')[0].text.strip()
                 company = exampleElement.select('[data-cy="search-result-company-name"]')[0].text.strip()
                 writeTheJob(jobID, title, location, company)
-    except: print("Asuvidha k liye khed hai")
+        except: print("Asuvidha k liye khed hai")
 
 if __name__ == "__main__":
     scrapeTheJobs()

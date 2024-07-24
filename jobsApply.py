@@ -154,8 +154,8 @@ def applyTheJobs():
 
 if __name__ == "__main__":
     applyTheJobs()
-    # schedule.every(15).minutes.do(applyTheJobs)
+    schedule.every(15).minutes.do(applyTheJobs)
 
-    # while True:
-    #     schedule.run_pending()
-    #     sleep(1)
+    while True:
+        schedule.run_pending()
+        sleep(1)
