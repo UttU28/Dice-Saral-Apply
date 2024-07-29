@@ -35,6 +35,7 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled       = true
 }
 
+
 resource "azurerm_service_plan" "backend" {
   name                = "${var.project_name}-appserviceplan"
   resource_group_name = azurerm_resource_group.backend-app.name
