@@ -11,15 +11,18 @@ steps:
     terraformVersion: 'latest'
 
 - task: AzureCLI@2
+  displayName: "Terraform"
   inputs:
-    azureSubscription: 'dicePipeline'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
+    azureSubscription:  dicePipeline
+    scriptType: bash
+    addSpnToEnvironment: true
+    scriptLocation: inlineScript
     inlineScript: |
-      echo "Azure CLI login using Service Principal"
-      az account set --subscription e4cf2944-5342-4787-b990-418828e39bfc
+      export ARM_CLIENT_ID=6ae75f68-d956-4829-a902-1e86d1998201
+      export ARM_CLIENT_SECRET=vei8Q~tStpzTRKzDr2sPpAFUciprZJjWtvmvha_I
+      export ARM_TENANT_ID=8e2dc2c8-cb38-4b25-91cf-cca92778bd6a
+
       terraform init
-    failOnStandardError: true
 # - task: TerraformCLI@1
 #   displayName: terraform init
 #   inputs:
