@@ -53,15 +53,18 @@ resource "azurerm_linux_web_app" "backend" {
     always_on = "true"
 
     application_stack {
-      docker_image     = "${azurerm_container_registry.acr.login_server}/${var.image_name}:latest"
+      docker_image = "thisacr.azurecr.io/imagename:latest"
+      #   docker_image     = "${azurerm_container_registry.acr.login_server}/${var.image_name}:latest"
       docker_image_tag = "latest"
       python_version   = "3.9"
     }
   }
 
   app_settings = {
-    "DOCKER_REGISTRY_SERVER_URL"      = "https://${azurerm_container_registry.acr.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.acr.admin_username
-    "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.acr.admin_password
+    "DOCKER_REGISTRY_SERVER_URL"      = "https://thisacr.azurecr.io"
+    "DOCKER_REGISTRY_SERVER_USERNAME" = "thisacr"
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = "U9+ivfherZPq3+UWDnj1fxftpOqWUgXqspIc90YYFI+ACRBkerUy"
+    # "DOCKER_REGISTRY_SERVER_USERNAME" = azurerm_container_registry.acr.admin_username
+    # "DOCKER_REGISTRY_SERVER_PASSWORD" = azurerm_container_registry.acr.admin_password
   }
 }
