@@ -6,7 +6,7 @@ pool:
 
 steps:
 
-- task: TerraformInstaller@1
+- task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
 
@@ -14,28 +14,10 @@ steps:
   displayName: terraform init
   inputs:
     command: init
-    # environmentServiceName: 'My Azure Service Connection'
-    # runAzLogin: true
-    # backendServiceArm: '$(subscription)'
-    # backendAzureRmResourceGroupName: '$(resourceGroup)'
-    # backendAzureRmStorageAccountName: '$(storageAccount)'
-    # backendAzureRmContainerName: '$(container)'
-    # backendAzureRmKey: '$(tfstateFile)'
 
 - task: TerraformCLI@1
   displayName: terraform plan -out=tfplan
   inputs:
     runAzLogin: true
     command: 'plan'
-    # commandOptions: '-out=tfplan'
-    # commandOptions: '-detailed-exitcode -out=tfplan'
-
-# - task: TerraformCLI
-#   displayName: terraform apply tfplan
-#   condition: eq(variables.anyTfChanges, true)
-#   inputs:
-#     provider: 'azurerm'
-#     command: 'apply'
-#     workingDirectory: '$(System.DefaultWorkingDirectory)/'
-#     commandOptions: 'tfplan'
 #     environmentServiceNameAzureRM: '$(subscription)'
