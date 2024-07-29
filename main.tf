@@ -28,7 +28,7 @@ resource "azurerm_linux_web_app" "example" {
   service_plan_id     = azurerm_service_plan.example.id
 
   site_config {
-    linux_fx_version = "DOCKER|${var.registry_name}.azurecr.io/${image_name}:latest"
+    linux_fx_version = "DOCKER|${var.registry_name}.azurecr.io/${var.image_name}:latest"
   }
 
   identity {
