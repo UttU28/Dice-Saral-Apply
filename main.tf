@@ -7,6 +7,7 @@ terraform {
   }
   required_version = ">= 0.14.9"
 }
+
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name
   location = var.location
@@ -20,25 +21,20 @@ resource "azurerm_service_plan" "example" {
   sku_name            = var.app_service_plan_sku
 }
 
-
 resource "azurerm_linux_web_app" "example" {
   name                = var.app_service_name
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
-  service_plan_id = azurerm_service_plan.example.id
+  service_plan_id     = azurerm_service_plan.example.id
 
   site_config {
+    linux_fx_version = "DOCKER|thisacr.azurecr.io/imagename:latest"
   }
 
   identity {
     type = "SystemAssigned"
   }
 }
-
-resource "azurerm_app_service_source_control" "name" {
-  app_id = azurerm_linux_web_app.example.id
-}
-
 
 # resource "azurerm_role_assignment" "example" {
 #   principal_id            = azurerm_web_app.example.identity[0].principal_id
