@@ -20,4 +20,4 @@ steps:
   inputs:
     runAzLogin: true
     command: 'plan'
-#     environmentServiceNameAzureRM: '$(subscription)'
+    environmentServiceNameAzureRM: '$(subscription)'
