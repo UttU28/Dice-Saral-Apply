@@ -17,12 +17,11 @@ stages:
 
     - task: AzureCLI@2
       inputs:
-        azureSubscription: '<Your-Service-Connection-Name>'
+        azureSubscription: 'dicePipeline'
         scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          terraform --version
+          terraform init
+          terraform plan
         addSpnToEnvironment: true
-
-    - script: |
-        terraform --version
-        terraform init
-        terraform plan -out=tfplan
-      displayName: 'Terraform Init and Plan'
