@@ -10,13 +10,22 @@ steps:
   inputs:
     terraformVersion: 'latest'
 
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'dicePipeline'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Azure CLI login using Service Principal"
+      az account set --subscription $(AZURE_SUBSCRIPTION_ID)
+    failOnStandardError: true
 - task: TerraformCLI@1
   displayName: terraform init
   inputs:
     command: init
     azureSubscription: dicePipeline
-    environmentServiceName: dicePipeline
     runAzLogin: true
+    environmentServiceName: dicePipeline
     allowTelemetryCollection: true
 
 - task: TerraformCLI@1
