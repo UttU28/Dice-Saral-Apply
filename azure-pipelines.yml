@@ -15,6 +15,12 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: '<Your-Service-Connection-Name>'
+        scriptType: 'bash'
+        addSpnToEnvironment: true
+
     - script: |
         terraform --version
         terraform init
