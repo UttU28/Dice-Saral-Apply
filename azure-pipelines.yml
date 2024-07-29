@@ -4,22 +4,49 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-stages:
-- stage: Plan
-  displayName: 'Terraform Plan'
-  jobs:
-  - job: TerraformPlan
-    displayName: 'Terraform Plan'
-    steps:
-    - task: TerraformInstaller@0
-      inputs:
-        terraformVersion: 'latest'
+variables:
+  subscription: Visual Studio Enterprise(17b12858-3960-4e6f-a663-a06fdae23428)
+  # resourceGroup: resourcegroup-tfstate
+  # storageAccount: terraformtfstateskip
+  # container: tfstate
+  # tfstateFile: terraform.tfstate
+  # anyTfChanges: false
 
-    - task: Bash@3
-      inputs:
-        targetType: 'inline'
-        script: |
-          az login --service-principal --username 6ae75f68-d956-4829-a902-1e86d1998201 --password vei8Q~tStpzTRKzDr2sPpAFUciprZJjWtvmvha_I --tenant 8e2dc2c8-cb38-4b25-91cf-cca92778bd6a
-          terraform --version
-          terraform init
-          terraform plan
+steps:
+
+- task: TerraformInstaller@0
+  displayName: install Terraform v0.12.28
+  inputs:
+    terraformVersion: '0.12.28'
+
+- task: TerraformTaskV1@0
+  displayName: terraform init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/'
+    # backendServiceArm: '$(subscription)'
+    # backendAzureRmResourceGroupName: '$(resourceGroup)'
+    # backendAzureRmStorageAccountName: '$(storageAccount)'
+    # backendAzureRmContainerName: '$(container)'
+    # backendAzureRmKey: '$(tfstateFile)'
+
+- task: TerraformTaskV1@0
+  displayName: terraform plan -out=tfplan
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/'
+    # commandOptions: '-out=tfplan'
+    # commandOptions: '-detailed-exitcode -out=tfplan'
+    environmentServiceNameAzureRM: '$(subscription)'
+
+# - task: TerraformTaskV1@0
+#   displayName: terraform apply tfplan
+#   condition: eq(variables.anyTfChanges, true)
+#   inputs:
+#     provider: 'azurerm'
+#     command: 'apply'
+#     workingDirectory: '$(System.DefaultWorkingDirectory)/'
+#     commandOptions: 'tfplan'
+#     environmentServiceNameAzureRM: '$(subscription)'
