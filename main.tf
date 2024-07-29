@@ -8,6 +8,10 @@ terraform {
   required_version = ">= 0.14.9"
 }
 
+provider "azurerm" {
+  features {}
+}
+
 resource "azurerm_resource_group" "example" {
   name     = var.resource_group_name
   location = var.location
