@@ -22,7 +22,6 @@ steps:
 - task: TerraformCLI@1
   displayName: terraform plan -out=tfplan
   inputs:
-    azureSubscription: 'dicePipeline'
     command: 'plan'
     providerAzureRmSubscriptionId: 'e4cf2944-5342-4787-b990-418828e39bfc'
     runAzLogin: true
