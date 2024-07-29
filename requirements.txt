@@ -1,9 +1,5 @@
-selenium
-beautifulsoup4
 tqdm
 requests
-pyautogui
 flask
 pypyodbc
 schedule
-opencv-python

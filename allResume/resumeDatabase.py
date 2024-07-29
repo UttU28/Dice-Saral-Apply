@@ -1,7 +1,8 @@
 import os
 import pypyodbc as odbc
-from dataScraping.credential import *
 
+username = 'iAmRoot'
+password = 'Qwerty@213'
 server = 'dice-sql.database.windows.net'
 database = 'dice_sql_database'
 

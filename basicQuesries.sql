@@ -3,10 +3,10 @@
 -- select * from applyQueue;
 -- select * from resumeList;
 
-select COUNT(*) from allData;
-select COUNT(*) from myQueue;
-select COUNT(*) from applyQueue;
-select COUNT(*) from resumeList;
+-- select COUNT(*) from allData;
+-- select COUNT(*) from myQueue;
+-- select COUNT(*) from applyQueue;
+-- select COUNT(*) from resumeList;
 
 -- SAFE!! Delete Table DATA
 -- DELETE FROM applyQueue;
@@ -23,7 +23,7 @@ select COUNT(*) from resumeList;
 
 
 -- QUERY TO SHOW ALL THE MYQUEUE DATA
--- select allData.id, allData.title, myQueue.timeOfArrival from allData JOIN myQueue ON allData.id = myQueue.id ORDER BY myQueue.timeOfArrival ASC;
+-- select allData.id, allData.title, applyQueue.timeOfArrival from allData JOIN applyQueue ON allData.id = applyQueue.id ORDER BY applyQueue.timeOfArrival ASC;
 -- SELECT COUNT(*) FROM allData JOIN myQueue ON allData.id = myQueue.id;
 
 -- INSERT INTO allData (id, title, location, company, description, datePosted, dateUpdated, myStatus, decisionTime)
