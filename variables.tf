@@ -1,49 +1,33 @@
-# Variables definition
-
-variable "resource_group_name" {
-  description = "Name of the resource group"
+variable "project_name" {
   type        = string
-  default     = "thisresourcegroup"
-}
+  description = "Project name"
+  default     = "dicesaralapply01"
 
-variable "app_service_plan_name" {
-  description = "Name of the App Service Plan"
-  type        = string
-  default     = "thatappserviceplan"
-}
-
-variable "app_service_name" {
-  description = "Name of the Web App"
-  type        = string
-  default     = "dicesaralapply"
-}
-
-variable "registry_name" {
-  description = "Name of the Azure Container Registry"
-  type        = string
-  default     = "thisacr"
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9]*$", var.project_name))
+    error_message = "The project_name must be alphanumeric."
+  }
 }
 
 variable "image_name" {
-  description = "Name of the Image"
   type        = string
-  default     = "imagename"
+  description = "Image name"
+  default     = "thisimage"
+
+  # validation {
+  #   condition     = can(regex("^[a-zA-Z0-9]*$", var.image_name))
+  #   error_message = "The image_name must be alphanumeric."
+  # }
 }
 
-variable "location" {
-  description = "Location for the resources"
+variable "resource_group_location" {
   type        = string
-  default     = "East US"
+  description = "Location for all resources."
+  default     = "eastus"
 }
 
-variable "app_service_plan_sku" {
-  description = "SKU for the App Service Plan"
+variable "resource_group_name_prefix" {
   type        = string
-  default     = "F1"
-}
-
-variable "app_service_plan_tier" {
-  description = "SKU for the App Service Plan"
-  type        = string
-  default     = "Free"
+  description = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
+  default     = "thisdicesaralapply1010"
 }
