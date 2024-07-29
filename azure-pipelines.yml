@@ -17,7 +17,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       echo "Azure CLI login using Service Principal"
-      az account set --subscription $(azureSubscription)
+      az account set --subscription e4cf2944-5342-4787-b990-418828e39bfc
       terraform init
     failOnStandardError: true
 # - task: TerraformCLI@1
