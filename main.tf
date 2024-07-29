@@ -48,6 +48,7 @@ resource "azurerm_resource_group" "example" {
   location = "East US"
 }
 
+
 resource "azurerm_app_service_plan" "example" {
   name                = "thatappserviceplan"
   location            = azurerm_resource_group.example.location
