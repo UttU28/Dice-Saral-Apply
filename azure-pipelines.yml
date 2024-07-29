@@ -18,7 +18,7 @@ steps:
   inputs:
     terraformVersion: 'latest'
 
-- task: TerraformTaskV1@0
+- task: TerraformCLI
   displayName: terraform init
   inputs:
     provider: 'azurerm'
@@ -30,7 +30,7 @@ steps:
     # backendAzureRmContainerName: '$(container)'
     # backendAzureRmKey: '$(tfstateFile)'
 
-- task: TerraformTaskV1@0
+- task: TerraformCLI
   displayName: terraform plan -out=tfplan
   inputs:
     provider: 'azurerm'
@@ -40,7 +40,7 @@ steps:
     # commandOptions: '-detailed-exitcode -out=tfplan'
     environmentServiceNameAzureRM: '$(subscription)'
 
-# - task: TerraformTaskV1@0
+# - task: TerraformCLI
 #   displayName: terraform apply tfplan
 #   condition: eq(variables.anyTfChanges, true)
 #   inputs:
