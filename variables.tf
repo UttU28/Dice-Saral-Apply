@@ -30,12 +30,6 @@ variable "image_name" {
   default     = "imagename"
 }
 
-variable "container_image" {
-  description = "Container image in ACR to be used in Web App"
-  type        = string
-  default     = "${var.registry_name}.azurecr.io/${image_name}:latest"
-}
-
 variable "location" {
   description = "Location for the resources"
   type        = string
