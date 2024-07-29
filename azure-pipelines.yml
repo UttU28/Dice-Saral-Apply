@@ -13,15 +13,20 @@ steps:
 - task: TerraformCLI@1
   displayName: terraform init
   inputs:
-    azureSubscription: 'dicePipeline'
     command: init
     providerAzureRmSubscriptionId: 'e4cf2944-5342-4787-b990-418828e39bfc'
     runAzLogin: true
     allowTelemetryCollection: true
 
+- task: Bash@3
+  inputs:
+    azureSubscription: 'dicePipeline'
+    targetType: 'inline'
+    script: 'az login'
 - task: TerraformCLI@1
   displayName: terraform plan -out=tfplan
   inputs:
+    azureSubscription: 'dicePipeline'
     command: 'plan'
     providerAzureRmSubscriptionId: 'e4cf2944-5342-4787-b990-418828e39bfc'
     runAzLogin: true
