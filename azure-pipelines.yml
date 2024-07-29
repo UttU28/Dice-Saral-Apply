@@ -14,6 +14,7 @@ steps:
   displayName: terraform init
   inputs:
     command: init
+    azureSubscription: dicePipeline
     environmentServiceName: 'dicePipeline'
     runAzLogin: true
     allowTelemetryCollection: true
