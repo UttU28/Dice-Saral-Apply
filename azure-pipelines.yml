@@ -15,7 +15,7 @@ steps:
   inputs:
     command: init
     azureSubscription: dicePipeline
-    environmentServiceName: 'dicePipeline'
+    environmentServiceName: dicePipeline
     runAzLogin: true
     allowTelemetryCollection: true
 
