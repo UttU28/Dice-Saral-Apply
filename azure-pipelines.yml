@@ -15,13 +15,11 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
-    - task: AzureCLI@2
+    - task: Bash@3
       inputs:
-        azureSubscription: 'dicePipeline'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
+        targetType: 'inline'
+        script: |
+          az login --service-principal --username 6ae75f68-d956-4829-a902-1e86d1998201 --password vei8Q~tStpzTRKzDr2sPpAFUciprZJjWtvmvha_I --tenant 8e2dc2c8-cb38-4b25-91cf-cca92778bd6a
           terraform --version
           terraform init
           terraform plan
-        addSpnToEnvironment: true
