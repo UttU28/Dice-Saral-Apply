@@ -18,11 +18,6 @@ steps:
     runAzLogin: true
     allowTelemetryCollection: true
 
-- task: Bash@3
-  inputs:
-    azureSubscription: 'dicePipeline'
-    targetType: 'inline'
-    script: 'az login'
 - task: TerraformCLI@1
   displayName: terraform plan -out=tfplan
   inputs:
