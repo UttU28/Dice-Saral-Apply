@@ -6,6 +6,12 @@ pool:
 
 steps:
 
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'dicePipeline'
+    scriptType: 'batch'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az login'
 - task: JasonBJohnson.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
