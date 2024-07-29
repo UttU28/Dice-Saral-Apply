@@ -18,15 +18,16 @@ steps:
     inlineScript: |
       echo "Azure CLI login using Service Principal"
       az account set --subscription $(azureSubscription)
+      terraform init
     failOnStandardError: true
-- task: TerraformCLI@1
-  displayName: terraform init
-  inputs:
-    command: init
-    azureSubscription: dicePipeline
-    runAzLogin: true
-    environmentServiceName: dicePipeline
-    allowTelemetryCollection: true
+# - task: TerraformCLI@1
+#   displayName: terraform init
+#   inputs:
+#     command: init
+#     azureSubscription: dicePipeline
+#     runAzLogin: true
+#     environmentServiceName: dicePipeline
+#     allowTelemetryCollection: true
 
 - task: TerraformCLI@1
   displayName: terraform plan -out=tfplan
