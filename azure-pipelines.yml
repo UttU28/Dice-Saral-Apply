@@ -13,7 +13,7 @@ steps:
 - task: AzureCLI@2
   displayName: "Terraform"
   inputs:
-    azureSubscription:  dicePipeline
+    azureSubscription: e4cf2944-5342-4787-b990-418828e39bfc
     scriptType: bash
     addSpnToEnvironment: true
     scriptLocation: inlineScript
