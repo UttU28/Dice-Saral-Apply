@@ -17,6 +17,6 @@ stages:
 
     - script: |
         terraform --version
-        terraform init"
+        terraform init
         terraform plan -out=tfplan
       displayName: 'Terraform Init and Plan'

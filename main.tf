@@ -35,24 +35,3 @@ resource "azurerm_linux_web_app" "example" {
     type = "SystemAssigned"
   }
 }
-
-# resource "azurerm_role_assignment" "example" {
-#   principal_id            = azurerm_web_app.example.identity[0].principal_id
-#   scope                   = azurerm_resource_group.example.id
-#   role_definition_name    = "AcrPull"
-# }
-
-# resource "azurerm_web_app" "example" {
-#   name                = "dicesaralapply"
-#   location            = azurerm_resource_group.example.location
-#   resource_group_name = azurerm_resource_group.example.name
-#   app_service_plan_id = azurerm_app_service_plan.example.id
-
-#   identity {
-#     type = "SystemAssigned"
-#   }
-
-#   site_config {
-#     linux_fx_version = "DOCKER|thisacr.azurecr.io/imagename:latest"
-#   }
-# }
