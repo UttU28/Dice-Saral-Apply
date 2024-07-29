@@ -13,7 +13,6 @@ steps:
 - task: TerraformCLI@1
   displayName: terraform init
   inputs:
-    inputs:
     command: init
     # environmentServiceName: 'My Azure Service Connection'
     # runAzLogin: true
@@ -30,7 +29,6 @@ steps:
     command: 'plan'
     # commandOptions: '-out=tfplan'
     # commandOptions: '-detailed-exitcode -out=tfplan'
-    environmentServiceNameAzureRM: '$(subscription)'
 
 # - task: TerraformCLI
 #   displayName: terraform apply tfplan
