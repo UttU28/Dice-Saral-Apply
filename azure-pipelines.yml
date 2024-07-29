@@ -23,6 +23,6 @@ steps:
   displayName: terraform plan -out=tfplan
   inputs:
     command: 'plan'
-    providerAzureRmSubscriptionId: 'e4cf2944-5342-4787-b990-418828e39bfc'
+    environmentServiceName: 'dicePipeline'
     runAzLogin: true
     allowTelemetryCollection: true
