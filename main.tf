@@ -13,12 +13,12 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-containerapps-terraform"
-  location = "swedencentral"
+  name     = "thisrgidkwhatitis"
+  location = "eastus"
 }
 
 resource "azurerm_log_analytics_workspace" "workspace" {
-  name                = "workspace-aca"
+  name                = "workspace-aca120210"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   sku                 = "PerGB2018"
@@ -26,7 +26,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
 }
 
 resource "azurerm_container_app_environment" "aca_environment" {
-  name                       = "aca-environment"
+  name                       = "aca-environment120210"
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
@@ -42,8 +42,8 @@ resource "azurerm_container_app" "aca" {
     container {
       name   = "dicefrontcontainer07"
       image  = "thisacr.azurecr.io/imagename:latest"
-      cpu    = 0.25
-      memory = "0.5Gi"
+      cpu    = 1
+      memory = "2Gi"
     }
   }
 
