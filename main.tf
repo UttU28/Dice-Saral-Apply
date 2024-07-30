@@ -13,7 +13,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "thisrgidkwhatitis"
+  name     = "thisrgidkwhatitis123"
   location = "eastus"
 }
 
