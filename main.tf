@@ -31,7 +31,7 @@ resource "azurerm_container_app" "aca" {
 
   template {
     container {
-      name   = "thisdicecontainerworksornot"
+      name   = "thisacr"
       image  = "thisacr.azurecr.io/imagename:latest"
       cpu    = 1
       memory = "2Gi"
