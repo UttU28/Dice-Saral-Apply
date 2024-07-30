@@ -24,23 +24,24 @@ steps:
       export ARM_SUBSCRIPTION_ID=e4cf2944-5342-4787-b990-418828e39bfc
 
       terraform init
+      terraform apply
 
-- task: TerraformCLI@1
-  displayName: Terraform Plan
-  inputs:
-    command: plan
-    azureSubscription: dicePipeline
-    environmentServiceName: dicePipeline
-    runAzLogin: true
-    allowTelemetryCollection: true
+# - task: TerraformCLI@1
+#   displayName: Terraform Plan
+#   inputs:
+#     command: plan
+#     azureSubscription: dicePipeline
+#     environmentServiceName: dicePipeline
+#     runAzLogin: true
+#     allowTelemetryCollection: true
 
 
-- task: TerraformCLI@1
-  displayName: Terraform Apply -out=tfplan
-  inputs:
-    command: apply
-    azureSubscription: dicePipeline
-    environmentServiceName: dicePipeline
-    runAzLogin: true
-    allowTelemetryCollection: true
+# - task: TerraformCLI@1
+#   displayName: Terraform Apply
+#   inputs:
+#     command: apply
+#     azureSubscription: dicePipeline
+#     environmentServiceName: dicePipeline
+#     runAzLogin: true
+#     allowTelemetryCollection: true
   
