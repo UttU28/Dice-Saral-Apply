@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     azurerm = {
-      source = "hashicorp/azurerm"
+      source  = "hashicorp/azurerm"
       version = "3.105.0"
     }
   }
@@ -13,23 +13,14 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "thisrgidkwhatitis123"
+  name     = "thisrgidkwhatitis124"
   location = "eastus"
 }
 
-# resource "azurerm_log_analytics_workspace" "workspace" {
-#   name                = "workspace-aca120210"
-#   location            = azurerm_resource_group.rg.location
-#   resource_group_name = azurerm_resource_group.rg.name
-#   sku                 = "PerGB2018"
-#   retention_in_days   = 30
-# }
-
 resource "azurerm_container_app_environment" "aca_environment" {
-  name                       = "aca-environment120210"
-  location                   = azurerm_resource_group.rg.location
-  resource_group_name        = azurerm_resource_group.rg.name
-  # log_analytics_workspace_id = azurerm_log_analytics_workspace.workspace.id
+  name                = "aca-environment120210"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_container_app" "aca" {
@@ -40,15 +31,21 @@ resource "azurerm_container_app" "aca" {
 
   template {
     container {
-      name   = "dicefrontcontainer07"
+      name   = "thisdicecontainerworksornot"
       image  = "thisacr.azurecr.io/imagename:latest"
       cpu    = 1
       memory = "2Gi"
     }
+
   }
+    registry {
+      server   = "thisacr.azurecr.io"
+      username = "thisacr"
+      password_secret_name = "U9+ivfherZPq3+UWDnj1fxftpOqWUgXqspIc90YYFI+ACRBkerUy"
+    }
 
   ingress {
-    target_port                = 80
+    target_port = 80
     traffic_weight {
       latest_revision = true
       percentage      = 100
