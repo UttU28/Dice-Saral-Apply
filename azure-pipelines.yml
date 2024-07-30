@@ -26,15 +26,6 @@ steps:
       terraform init
 
 - task: TerraformCLI@1
-  displayName: Terraform Destroy
-  inputs:
-    command: destroy
-    azureSubscription: dicePipeline
-    environmentServiceName: dicePipeline
-    runAzLogin: true
-    allowTelemetryCollection: true
-
-- task: TerraformCLI@1
   displayName: Terraform Plan
   inputs:
     command: plan
