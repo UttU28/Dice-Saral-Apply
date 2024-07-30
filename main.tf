@@ -7,7 +7,7 @@ resource "azurerm_log_analytics_workspace" "workspace" {
   name                = "workspace-aca"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku                 = "B1"
+  sku                 = "PerGB2018"
   retention_in_days   = 30
 }
 
@@ -35,7 +35,6 @@ resource "azurerm_container_app" "aca" {
 
   ingress {
     target_port                = 80
-
     traffic_weight {
       latest_revision = true
       percentage      = 100
