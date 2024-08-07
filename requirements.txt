@@ -1,5 +1,1 @@
-tqdm
-requests
-flask
-pypyodbc
-schedule
+openai
