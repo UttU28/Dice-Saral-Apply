@@ -90,13 +90,6 @@ jobs:
         # Set the pipeline variable
         echo "##vso[task.setvariable variable=containerAppUrl]$CONTAINER_APP_URL"
 
-- job: PrintTheOutput
-  displayName: 'Print Terraform Output'
-  # dependsOn: Terraform
-  dependsOn: ExtractTerraformOutput
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
   - task: AzureCLI@2
     displayName: 'Print Terraform Output'
     inputs:
