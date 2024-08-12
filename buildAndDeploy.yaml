@@ -13,6 +13,11 @@ parameters:
     type: string
   - name: imageRepository
     type: string
+  - name: gitRepoUrl
+    type: string
+  - name: gitBranch
+    type: string
+    default: 'main'
 
 jobs:
 - job: Build
@@ -20,33 +25,42 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+  - task: Bash@3
+    displayName: 'Clone Git Repository'
+    inputs:
+      targetType: 'inline'
+      script: |
+        git clone --branch ${{ parameters.gitBranch }} ${{ parameters.gitRepoUrl }} repo
+
   - task: Docker@2
-    displayName: Build and push an image to container registry
+    displayName: 'Build Docker Image'
     inputs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: build
-      Dockerfile: ${{ parameters.dockerfilePath }}
+      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      buildContext: 'repo'
       tags: ${{ parameters.imageTag }}
 
   - task: Docker@2
-    displayName: Build and push an image with another tag
+    displayName: 'Build Docker Image with Another Tag'
     inputs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: build
-      Dockerfile: ${{ parameters.dockerfilePath }}
+      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      buildContext: 'repo'
       tags: ${{ parameters.imageTag }}art
 
   - task: Bash@3
-    displayName: Save Docker Image
+    displayName: 'Save Docker Image'
     inputs:
       targetType: 'inline'
       script: |
         docker save ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art -o $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
 
   - task: PublishPipelineArtifact@1
-    displayName: Publish the Artifact
+    displayName: 'Publish the Artifact'
     inputs:
       targetPath: '$(Pipeline.Workspace)/${{ parameters.imageName }}.tar'
       artifact: ${{ parameters.artifactName }}
@@ -65,7 +79,7 @@ jobs:
       targetPath: '$(Pipeline.Workspace)'
 
   - task: Bash@3
-    displayName: Load Docker Image
+    displayName: 'Load Docker Image'
     inputs:
       targetType: 'inline'
       script: |
@@ -73,10 +87,11 @@ jobs:
         docker tag ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art ${{ parameters.imageRepository }}:${{ parameters.imageTag }}
 
   - task: Docker@2
-    displayName: Push an image to container registry
+    displayName: 'Push Docker Image to ACR'
     inputs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: push
-      Dockerfile: ${{ parameters.dockerfilePath }}
+      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      buildContext: 'repo'
       tags: ${{ parameters.imageTag }}

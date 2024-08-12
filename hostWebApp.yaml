@@ -1,6 +1,6 @@
 trigger:
-# - main
-- none
+- main
+# - none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -11,6 +11,8 @@ variables:
   imageRepository: '$(acrName).azurecr.io/$(imageName)'
   artifactName: '$(imageName)_ARTIFACT'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
+  gitBranch: 'main'
 
 jobs:
 - job: GetSecrets
@@ -33,6 +35,8 @@ jobs:
     dockerfilePath: '$(dockerfilePath)'
     artifactName: '$(artifactName)'
     imageRepository: '$(imageRepository)'
+    gitRepoUrl: '$(gitRepoUrl)'
+    gitBranch: '$(gitBranch)'
 
 - job: TerraformTask
   displayName: 'Deploy Terraform Infra'
