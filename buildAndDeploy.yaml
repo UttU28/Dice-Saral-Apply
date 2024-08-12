@@ -38,7 +38,7 @@ jobs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: build
-      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
       tags: ${{ parameters.imageTag }}
 
@@ -48,7 +48,7 @@ jobs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: build
-      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
       tags: ${{ parameters.imageTag }}art
 

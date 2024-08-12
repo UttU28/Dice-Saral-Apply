@@ -9,7 +9,7 @@ variables:
   imageTag: 'latest'
   imageRepository: '$(acrName).azurecr.io/$(imageName)'
   artifactName: '$(imageName)_ARTIFACT'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
   gitBranch: 'main'
 
