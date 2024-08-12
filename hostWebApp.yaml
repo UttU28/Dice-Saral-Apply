@@ -50,6 +50,7 @@ jobs:
         CONTAINER_APP_URL=$(az containerapp show -g this-dice-jobscraping-rg -n dicesaralapply --query properties.configuration.ingress.fqdn --output tsv)
 
         echo "##vso[task.setvariable variable=containerAppUrl]$CONTAINER_APP_URL"
+        echo "Container App URL is: $(containerAppUrl)"
 
 # # - job: BuildAndDeploy
 # #   displayName: 'Build and Deploy'
@@ -78,21 +79,3 @@ jobs:
 # #   - template: terraformTasks.yaml
 # #     parameters:
 # #       workingDirectory: 'webApp'
-
-# - job: ExtractTerraformOutput
-#   displayName: 'Extract Terraform Output'
-#   dependsOn: Terraform
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-
-- job: EchoContainerAppUrl
-  displayName: 'Echo the Container App URL'
-  # dependsOn: ExtractTerraformOutput
-  dependsOn: GetSecrets
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: |
-      echo "Container App URL is: $(containerAppUrl)"
-    displayName: 'Echo the Container App URL'
