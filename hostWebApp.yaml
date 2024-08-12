@@ -16,12 +16,10 @@ variables:
 jobs:
 - job: CheckoutCode
   displayName: 'Checkout Code'
+  pool:
+    vmImage: 'ubuntu-latest'
   steps:
-  - task: Checkout@2
-    displayName: 'Checkout code'
-    inputs:
-      repository: 'self'
-      persistCredentials: true
+  - checkout: self  # This is the correct syntax for checking out the current repository
 
 - job: GetSecrets
   displayName: 'Get Secrets from Key Vault'
