@@ -27,7 +27,7 @@ steps:
       export ARM_TENANT_ID='$(arm-tenant-id)'
       export ARM_SUBSCRIPTION_ID='$(arm-subscription-id)'
 
-      terraform init.
+      terraform init
 
 - task: TerraformCLI@1
   displayName: 'Terraform Plan'
