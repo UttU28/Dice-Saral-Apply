@@ -46,6 +46,6 @@ jobs:
   - task: Checkout@2
     displayName: 'Checkout code'
 
-  - template: terraform-tasks.yml
+  - template: terraformTasks.yaml
     parameters:
       workingDirectory: 'webApp'
