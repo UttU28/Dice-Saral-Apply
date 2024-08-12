@@ -86,12 +86,13 @@ jobs:
 #     vmImage: 'ubuntu-latest'
 #   steps:
 
-# - job: EchoContainerAppUrl
-#   displayName: 'Echo the Container App URL'
-#   # dependsOn: ExtractTerraformOutput
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-#   - script: |
-#       echo "Container App URL is: $(containerAppUrl)"
-#     displayName: 'Echo the Container App URL'
+- job: EchoContainerAppUrl
+  displayName: 'Echo the Container App URL'
+  # dependsOn: ExtractTerraformOutput
+  dependsOn: GetSecrets
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      echo "Container App URL is: $(containerAppUrl)"
+    displayName: 'Echo the Container App URL'
