@@ -1,5 +1,6 @@
 trigger:
-- main
+# - main
+- none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -19,38 +20,82 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - checkout: self  # This is the correct syntax for checking out the current repository
+  - checkout: self
 
-# - job: GetSecrets
-#   displayName: 'Get Secrets from Key Vault'
-#   dependsOn: CheckoutCode
-#   steps:
-#   - task: AzureKeyVault@2
-#     displayName: 'Get Secrets from Key Vault'
-#     inputs:
-#       azureSubscription: '$(azureSubscription)'
-#       KeyVaultName: 'thisdicekeyvault'
-#       SecretsFilter: '*'
-#       RunAsPreJob: true
-
-# - template: buildAndDeploy.yaml
-#   parameters:
-#     containerRegistry: '$(containerRegistry)'
-#     acrName: '$(acrName)'
-#     imageName: '$(imageName)'
-#     imageTag: '$(imageTag)'
-#     dockerfilePath: '$(dockerfilePath)'
-#     artifactName: '$(artifactName)'
-#     imageRepository: '$(imageRepository)'
-#     gitRepoUrl: '$(gitRepoUrl)'
-#     gitBranch: '$(gitBranch)'
-
-- job: TerraformTask
-  displayName: 'Deploy Terraform Infra'
+- job: GetSecrets
+  displayName: 'Get Secrets from Key Vault'
   dependsOn: CheckoutCode
+  steps:
+  - task: AzureKeyVault@2
+    displayName: 'Get Secrets from Key Vault'
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      KeyVaultName: 'thisdicekeyvault'
+      SecretsFilter: '*'
+      RunAsPreJob: true
+
+  - task: AzureCLI@2
+    displayName: 'Extract Terraform Output'
+    inputs:
+      azureSubscription: $(azureSubscription)
+      scriptType: bash
+      addSpnToEnvironment: true
+      scriptLocation: inlineScript
+      inlineScript: |
+        # export ARM_CLIENT_ID='$(arm-client-id)'
+        # export ARM_CLIENT_SECRET='$(arm-client-secret)'
+        # export ARM_TENANT_ID='$(arm-tenant-id)'
+        # export ARM_SUBSCRIPTION_ID='$(arm-subscription-id)'
+
+        CONTAINER_APP_URL=$(az containerapp show 
+          --name dicesaralapply \
+          --resource-group this-dice-jobscraping-rg \
+          --query "properties.configuration.ingress.fqdn" \
+          --output tsv)
+
+        echo "##vso[task.setvariable variable=containerAppUrl]$CONTAINER_APP_URL"
+
+# # - job: BuildAndDeploy
+# #   displayName: 'Build and Deploy'
+# #   dependsOn: GetSecrets
+# #   pool:
+# #     vmImage: 'ubuntu-latest'
+# #   steps:
+# #   - template: buildAndDeploy.yaml
+# #     parameters:
+# #       containerRegistry: '$(containerRegistry)'
+# #       acrName: '$(acrName)'
+# #       imageName: '$(imageName)'
+# #       imageTag: '$(imageTag)'
+# #       dockerfilePath: '$(dockerfilePath)'
+# #       artifactName: '$(artifactName)'
+# #       imageRepository: '$(imageRepository)'
+# #       gitRepoUrl: '$(gitRepoUrl)'
+# #       gitBranch: '$(gitBranch)'
+
+# # - job: Terraform
+# #   displayName: 'Deploy Terraform Infrastructure'
+# #   dependsOn: BuildAndDeploy
+# #   pool:
+# #     vmImage: 'ubuntu-latest'
+# #   steps:
+# #   - template: terraformTasks.yaml
+# #     parameters:
+# #       workingDirectory: 'webApp'
+
+# - job: ExtractTerraformOutput
+#   displayName: 'Extract Terraform Output'
+#   dependsOn: Terraform
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+
+- job: EchoContainerAppUrl
+  displayName: 'Echo the Container App URL'
+  dependsOn: ExtractTerraformOutput
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - template: terraformTasks.yaml
-    parameters:
-      workingDirectory: 'webApp'
+  - script: |
+      echo "Container App URL is: $(containerAppUrl)"
+    displayName: 'Echo the Container App URL'
