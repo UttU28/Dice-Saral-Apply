@@ -19,9 +19,8 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - checkout: self
+  - checkout: self  # This is the correct syntax for checking out the current repository
 
-# Uncomment this job if you want to retrieve secrets from Key Vault
 # - job: GetSecrets
 #   displayName: 'Get Secrets from Key Vault'
 #   dependsOn: CheckoutCode
@@ -34,63 +33,24 @@ jobs:
 #       SecretsFilter: '*'
 #       RunAsPreJob: true
 
-# - job: BuildAndDeploy
-#   displayName: 'Build and Deploy'
-#   dependsOn: CheckoutCode
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-#   - template: buildAndDeploy.yaml
-#     parameters:
-#       containerRegistry: '$(containerRegistry)'
-#       acrName: '$(acrName)'
-#       imageName: '$(imageName)'
-#       imageTag: '$(imageTag)'
-#       dockerfilePath: '$(dockerfilePath)'
-#       artifactName: '$(artifactName)'
-#       imageRepository: '$(imageRepository)'
-#       gitRepoUrl: '$(gitRepoUrl)'
-#       gitBranch: '$(gitBranch)'
+# - template: buildAndDeploy.yaml
+#   parameters:
+#     containerRegistry: '$(containerRegistry)'
+#     acrName: '$(acrName)'
+#     imageName: '$(imageName)'
+#     imageTag: '$(imageTag)'
+#     dockerfilePath: '$(dockerfilePath)'
+#     artifactName: '$(artifactName)'
+#     imageRepository: '$(imageRepository)'
+#     gitRepoUrl: '$(gitRepoUrl)'
+#     gitBranch: '$(gitBranch)'
 
-# - job: Terraform
-#   displayName: 'Deploy Terraform Infrastructure'
-#   dependsOn: BuildAndDeploy
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-#   - template: terraformTasks.yaml
-#     parameters:
-#       workingDirectory: 'webApp'
-
-- job: ExtractTerraformOutput
-  displayName: 'Extract Terraform Output'
-  # dependsOn: Terraform
+- job: TerraformTask
+  displayName: 'Deploy Terraform Infra'
+  dependsOn: CheckoutCode
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - task: AzureCLI@2
-    displayName: "Extract Terraform Output"
-    inputs:
-      azureSubscription: $(azureSubscription)
-      scriptType: bash
-      addSpnToEnvironment: true
-      scriptLocation: inlineScript
-      inlineScript: |
-        CONTAINER_APP_URL=$(az containerapp show \
-          --name <container-app-name> \
-          --resource-group <resource-group-name> \
-          --query "properties.configuration.ingress.fqdn" \
-          --output tsv)
-
-        # Set the pipeline variable
-        echo "##vso[task.setvariable variable=containerAppUrl]$CONTAINER_APP_URL"
-
-- job: EchoContainerAppUrl
-  displayName: 'Echo the Container App URL'
-  dependsOn: ExtractTerraformOutput
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: |
-      echo "Container App URL is: $(containerAppUrl)"
-    displayName: 'Echo the Container App URL'
+  - template: terraformTasks.yaml
+    parameters:
+      workingDirectory: 'webApp'

@@ -13,14 +13,14 @@ terraform {
 }
 
 data "azurerm_container_app_environment" "app_environment" {
-  name                = "this-dice-jobscraping-app-environment"
-  resource_group_name = "this-dice-jobscraping-rg"
+  name                = local.jobscraping-app-environment
+  resource_group_name = local.jobscraping-rg
 }
 
-resource "azurerm_container_app" "dicesaralapply11" {
-  name                         = "dicesaralapply11-app"
+resource "azurerm_container_app" "dicesaralapply" {
+  name                         = local.webapp-name
   container_app_environment_id = data.azurerm_container_app_environment.app_environment.id
-  resource_group_name          = "this-dice-jobscraping-rg"
+  resource_group_name          = local.jobscraping-rg
   revision_mode                = "Single"
 
   template {
@@ -79,9 +79,4 @@ resource "azurerm_container_app" "dicesaralapply11" {
         --allow-insecure false
     EOT
   }
-}
-
-output "container_app_url" {
-  value = azurerm_container_app.dicesaralapply11.latest_revision_fqdn
-  description = "The FQDN of the deployed container app"
 }
