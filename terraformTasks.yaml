@@ -40,13 +40,30 @@ steps:
     runAzLogin: true
     allowTelemetryCollection: true
 
-# - task: TerraformCLI@1
-#   displayName: 'Terraform Apply'
-#   inputs:
-#     command: 'apply'
-#     workingDirectory: ${{ parameters.workingDirectory }}
-#     azureSubscription: 'dicePipeline'
-#     environmentServiceName: 'dicePipeline'
-#     runAzLogin: true
-#     allowTelemetryCollection: true
-#     additionalArguments: '-auto-approve'
+- task: TerraformCLI@1
+  displayName: 'Terraform Apply'
+  inputs:
+    command: 'apply'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    azureSubscription: 'dicePipeline'
+    environmentServiceName: 'dicePipeline'
+    runAzLogin: true
+    allowTelemetryCollection: true
+    additionalArguments: '-auto-approve -json > tfoutput.json'
+
+- task: AzureCLI@2
+  displayName: "Extract Terraform Output"
+  inputs:
+    azureSubscription: dicePipeline
+    scriptType: bash
+    addSpnToEnvironment: true
+    scriptLocation: inlineScript
+    inlineScript: |
+      cd ${{ parameters.workingDirectory }}
+      CONTAINER_APP_URL=$(terraform output -raw container_app_url)
+      echo "##vso[task.setvariable variable=containerAppUrl]$CONTAINER_APP_URL"
+
+# Following task in the main pipeline or subsequent pipeline file
+- script: |
+    echo "Container App URL is: $(containerAppUrl)"
+  displayName: 'Echo the Container App URL'

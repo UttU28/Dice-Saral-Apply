@@ -80,3 +80,8 @@ resource "azurerm_container_app" "dicesaralapply11" {
     EOT
   }
 }
+
+output "container_app_url" {
+  value = azurerm_container_app.dicesaralapply11.latest_revision_fqdn
+  description = "The FQDN of the deployed container app"
+}
