@@ -34,37 +34,37 @@ jobs:
 #       SecretsFilter: '*'
 #       RunAsPreJob: true
 
-- job: BuildAndDeploy
-  displayName: 'Build and Deploy'
-  dependsOn: CheckoutCode
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - template: buildAndDeploy.yaml
-    parameters:
-      containerRegistry: '$(containerRegistry)'
-      acrName: '$(acrName)'
-      imageName: '$(imageName)'
-      imageTag: '$(imageTag)'
-      dockerfilePath: '$(dockerfilePath)'
-      artifactName: '$(artifactName)'
-      imageRepository: '$(imageRepository)'
-      gitRepoUrl: '$(gitRepoUrl)'
-      gitBranch: '$(gitBranch)'
+# - job: BuildAndDeploy
+#   displayName: 'Build and Deploy'
+#   dependsOn: CheckoutCode
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - template: buildAndDeploy.yaml
+#     parameters:
+#       containerRegistry: '$(containerRegistry)'
+#       acrName: '$(acrName)'
+#       imageName: '$(imageName)'
+#       imageTag: '$(imageTag)'
+#       dockerfilePath: '$(dockerfilePath)'
+#       artifactName: '$(artifactName)'
+#       imageRepository: '$(imageRepository)'
+#       gitRepoUrl: '$(gitRepoUrl)'
+#       gitBranch: '$(gitBranch)'
 
-- job: Terraform
-  displayName: 'Deploy Terraform Infrastructure'
-  dependsOn: BuildAndDeploy
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - template: terraformTasks.yaml
-    parameters:
-      workingDirectory: 'webApp'
+# - job: Terraform
+#   displayName: 'Deploy Terraform Infrastructure'
+#   dependsOn: BuildAndDeploy
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - template: terraformTasks.yaml
+#     parameters:
+#       workingDirectory: 'webApp'
 
 - job: ExtractTerraformOutput
   displayName: 'Extract Terraform Output'
-  dependsOn: Terraform
+  # dependsOn: Terraform
   pool:
     vmImage: 'ubuntu-latest'
   steps:
