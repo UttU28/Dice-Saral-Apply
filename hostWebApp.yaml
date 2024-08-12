@@ -1,6 +1,5 @@
 trigger:
 - main
-# - none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -15,8 +14,18 @@ variables:
   gitBranch: 'main'
 
 jobs:
+- job: CheckoutCode
+  displayName: 'Checkout Code'
+  steps:
+  - task: Checkout@2
+    displayName: 'Checkout code'
+    inputs:
+      repository: 'self'
+      persistCredentials: true
+
 - job: GetSecrets
   displayName: 'Get Secrets from Key Vault'
+  dependsOn: CheckoutCode
   steps:
   - task: AzureKeyVault@2
     displayName: 'Get Secrets from Key Vault'
@@ -40,12 +49,10 @@ jobs:
 
 - job: TerraformTask
   displayName: 'Deploy Terraform Infra'
+  dependsOn: CheckoutCode
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - task: Checkout@2
-    displayName: 'Checkout code'
-
   - template: terraformTasks.yaml
     parameters:
       workingDirectory: 'webApp'
