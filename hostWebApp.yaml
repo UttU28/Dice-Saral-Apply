@@ -1,6 +1,6 @@
 trigger:
-# - main
-- none
+- main
+# - none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -92,7 +92,7 @@ jobs:
 
 - job: EchoContainerAppUrl
   displayName: 'Echo the Container App URL'
-  dependsOn: ExtractTerraformOutput
+  # dependsOn: ExtractTerraformOutput
   pool:
     vmImage: 'ubuntu-latest'
   steps:
