@@ -1,0 +1,47 @@
+trigger:
+# - main
+- none
+
+variables:
+  azureSubscription: 'dicePipeline'
+  containerRegistry: 'dockerSC'
+  acrName: 'thisacr'
+  imageName: 'dicewebview'
+  imageTag: 'latest'
+  imageRepository: '$(acrName).azurecr.io/$(imageName)'
+  artifactName: '$(imageName)_ARTIFACT'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+
+jobs:
+- job: GetSecrets
+  displayName: 'Get Secrets from Key Vault'
+  steps:
+  - task: AzureKeyVault@2
+    displayName: 'Get Secrets from Key Vault'
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      KeyVaultName: 'thisdicekeyvault'
+      SecretsFilter: '*'
+      RunAsPreJob: true
+
+- template: buildAndDeploy.yaml
+  parameters:
+    containerRegistry: '$(containerRegistry)'
+    acrName: '$(acrName)'
+    imageName: '$(imageName)'
+    imageTag: '$(imageTag)'
+    dockerfilePath: '$(dockerfilePath)'
+    artifactName: '$(artifactName)'
+    imageRepository: '$(imageRepository)'
+
+- job: TerraformTask
+  displayName: 'Deploy Terraform Infra'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Checkout@2
+    displayName: 'Checkout code'
+
+  - template: terraform-tasks.yml
+    parameters:
+      workingDirectory: 'webApp'

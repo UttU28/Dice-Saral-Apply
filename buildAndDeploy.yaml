@@ -1,0 +1,82 @@
+parameters:
+  - name: containerRegistry
+    type: string
+  - name: acrName
+    type: string
+  - name: imageName
+    type: string
+  - name: imageTag
+    type: string
+  - name: dockerfilePath
+    type: string
+  - name: artifactName
+    type: string
+  - name: imageRepository
+    type: string
+
+jobs:
+- job: Build
+  displayName: 'Build Container Image'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Docker@2
+    displayName: Build and push an image to container registry
+    inputs:
+      containerRegistry: ${{ parameters.containerRegistry }}
+      repository: ${{ parameters.imageName }}
+      command: build
+      Dockerfile: ${{ parameters.dockerfilePath }}
+      tags: ${{ parameters.imageTag }}
+
+  - task: Docker@2
+    displayName: Build and push an image with another tag
+    inputs:
+      containerRegistry: ${{ parameters.containerRegistry }}
+      repository: ${{ parameters.imageName }}
+      command: build
+      Dockerfile: ${{ parameters.dockerfilePath }}
+      tags: ${{ parameters.imageTag }}art
+
+  - task: Bash@3
+    displayName: Save Docker Image
+    inputs:
+      targetType: 'inline'
+      script: |
+        docker save ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art -o $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish the Artifact
+    inputs:
+      targetPath: '$(Pipeline.Workspace)/${{ parameters.imageName }}.tar'
+      artifact: ${{ parameters.artifactName }}
+      publishLocation: 'pipeline'
+
+- job: DeployToACR
+  displayName: 'Deploy to Azure Container Registry'
+  dependsOn: Build
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: DownloadPipelineArtifact@2
+    inputs:
+      buildType: 'current'
+      artifact: ${{ parameters.artifactName }}
+      targetPath: '$(Pipeline.Workspace)'
+
+  - task: Bash@3
+    displayName: Load Docker Image
+    inputs:
+      targetType: 'inline'
+      script: |
+        docker load --input $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
+        docker tag ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art ${{ parameters.imageRepository }}:${{ parameters.imageTag }}
+
+  - task: Docker@2
+    displayName: Push an image to container registry
+    inputs:
+      containerRegistry: ${{ parameters.containerRegistry }}
+      repository: ${{ parameters.imageName }}
+      command: push
+      Dockerfile: ${{ parameters.dockerfilePath }}
+      tags: ${{ parameters.imageTag }}
