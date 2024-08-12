@@ -13,6 +13,8 @@ variables:
   dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
   gitBranch: 'main'
+  webappName: 'dicesaralapply'
+  rgName: 'this-dice-jobscraping-rg'
 
 jobs:
 - job: CheckoutCode
@@ -66,8 +68,7 @@ jobs:
 
 - job: ExtractTerraformOutput
   displayName: 'Extract Terraform Output'
-  # dependsOn: Terraform
-  dependsOn: CheckoutCode
+  dependsOn: Terraform
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -79,10 +80,9 @@ jobs:
       addSpnToEnvironment: true
       scriptLocation: inlineScript
       inlineScript: |
-        # Retrieve the URL of the Container App
         CONTAINER_APP_URL=$(az containerapp show \
-          --resource-group this-dice-jobscraping-rg \
-          --name dicesaralapply \
+          --resource-group $(rgName) \
+          --name $(webappName) \
           --query "properties.configuration.ingress.fqdn" \
           --output tsv)
 
@@ -92,12 +92,12 @@ jobs:
         # Output the URL for logging
         echo "Container App URL is: $CONTAINER_APP_URL"
 
-- job: EchoContainerAppUrl
-  displayName: 'Echo the Container App URL'
-  dependsOn: ExtractTerraformOutput
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - script: |
-      echo "Container App URL is: $(containerAppUrl)"
-    displayName: 'Echo the Container App URL'
+  - task: AzureCLI@2
+    displayName: 'Extract Terraform Output'
+    inputs:
+      azureSubscription: $(azureSubscription)
+      scriptType: bash
+      addSpnToEnvironment: true
+      scriptLocation: inlineScript
+      inlineScript: |
+        echo "Container App URL is: $(containerAppUrl)"
