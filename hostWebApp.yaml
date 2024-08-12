@@ -17,7 +17,7 @@ variables:
   rgName: 'this-dice-jobscraping-rg'
 
 jobs:
-- job: CheckoutCode
+- job: Checkout
   displayName: 'Checkout Code'
   pool:
     vmImage: 'ubuntu-latest'
@@ -26,7 +26,7 @@ jobs:
 
 # - job: GetSecrets
 #   displayName: 'Get Secrets from Key Vault'
-#   dependsOn: CheckoutCode
+#   dependsOn: Checkout
 #   pool:
 #     vmImage: 'ubuntu-latest'
 #   steps:
@@ -68,7 +68,8 @@ jobs:
 
 - job: ExtractTerraformOutput
   displayName: 'Extract Terraform Output'
-  dependsOn: Terraform
+  # dependsOn: Terraform
+  dependsOn: Checkout
   pool:
     vmImage: 'ubuntu-latest'
   steps:
