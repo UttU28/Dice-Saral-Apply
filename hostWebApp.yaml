@@ -9,6 +9,7 @@ variables:
   dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
   gitBranch: 'main'
+  webapp-name: 'dicesaralapply'
 
 jobs:
 - job: Checkout
