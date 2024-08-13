@@ -2,6 +2,10 @@ trigger:
 - main
 # - none
 
+variables:
+  azureSubscription: 'dicePipeline'
+  containerRegistry: 'dockerSC'
+
 jobs:
 - job: Checkout
   displayName: 'Checkout Code INITIAL INFRA'
