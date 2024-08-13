@@ -1,19 +1,31 @@
-import openai
 import os
-import pandas as pd
-import time
+import requests
+import sys
 
-openai.api_key = '<YOUR API KEY>'
-def get_completion(prompt, model="gpt-3.5-turbo"):
-    messages = [{"role": "user", "content": prompt}]
-    response = openai.ChatCompletion.create(model=model, messages=messages, temperature=0,)
-    return response.choices[0].message["content"]
+TOKEN= str(sys.argv[1])
+OWNER= str(sys.argv[2])
+REPO= str(sys.argv[3])
+Workflow_Name= str(sys.argv[4])
+parameter1= str(sys.argv[5])
+parameter2 = str(sys.argv[6])
 
+print( "the toke value is")
+def trigger_workflow(Workflow_Name,parameter1,parameter2):
 
+      headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "Authorization": f"token {TOKEN}",
+      }
 
+      data = {
+        "event_type": Workflow_Name,
+        "client_payload": {
+          'parameter1': parameter1,
+          'parameter2': parameter2
+        }
+      }
 
-prompt = "<YOUR QUERY>"
+      responseValue=requests.post(f"https://api.github.com/repos/{OWNER}/{REPO}/dispatches",json=data,headers=headers)
+      print(responseValue.content)
 
-response = get_completion(prompt)
-
-print(response)
+trigger_workflow(Workflow_Name,parameter1,parameter2)
