@@ -91,10 +91,10 @@ jobs:
     inputs:
       targetType: 'inline'
       script: |
-        $githubToken = "$(GITHUB_TOKEN)"
+        $githubToken = $env:GITHUB_TOKEN
         $repository = "updateSites"
         $branch = "main"
-        $containerAppUrl = "$(CONTAINER_APP_URL)"
+        $containerAppUrl = $env:CONTAINER_APP_URL
         
         $data = @{
           "event_type" = "update_index_html"
