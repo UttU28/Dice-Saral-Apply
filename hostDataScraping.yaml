@@ -64,4 +64,3 @@ jobs:
   - template: terraformTasks.yaml
     parameters:
       workingDirectory: 'dataScraping'
-
