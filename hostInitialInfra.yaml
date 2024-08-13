@@ -1,0 +1,22 @@
+trigger:
+# - main
+- none
+
+jobs:
+- job: Checkout
+  displayName: 'Checkout Code'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+    - checkout: self
+
+- job: Terraform
+  displayName: 'Deploy Terraform Infrastructure'
+  dependsOn: BuildAndDeploy
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - template: terraformTasks.yaml
+    parameters:
+      workingDirectory: 'initialInfra'
+

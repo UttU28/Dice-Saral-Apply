@@ -13,14 +13,14 @@ terraform {
 }
 
 data "azurerm_container_app_environment" "app_environment" {
-  name                = local.jobscraping-app-environment
-  resource_group_name = local.jobscraping-rg
+  name                = local.dicesaralapply-app-environment
+  resource_group_name = local.dicesaralapply-rg
 }
 
 resource "azurerm_container_app" "dicesaralapply" {
   name                         = local.webapp-name
   container_app_environment_id = data.azurerm_container_app_environment.app_environment.id
-  resource_group_name          = local.jobscraping-rg
+  resource_group_name          = local.dicesaralapply-rg
   revision_mode                = "Single"
 
   template {
