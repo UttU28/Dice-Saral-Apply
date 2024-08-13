@@ -58,16 +58,10 @@ jobs:
     displayName: 'Install dependencies'
 
   - script: |
-      python $(Build.SourcesDirectory)/test.py $(pat_token) $(CalledWorkflow_github_account) $(CalledWorkflow_repo_github) $(calledworkflow_name) $(parameter1) $(parameter2)
+      python $(Build.SourcesDirectory)/test.py $(pat_token) UttU28 updateSites InvokeGitHubActionsCalled $(parameter1) $(parameter2)
     displayName: 'Trigger the Workflow'
     env:
       pat_token: $(pat_token)
-    inputs:
-      CalledWorkflow_github_account: UttU28
-      CalledWorkflow_repo_github: updateSites
-      calledworkflow_name: InvokeGitHubActionsCalled
-      parameter1: $(parameter1)
-      parameter2: $(parameter2)
 
 
 # Uncomment if Key Vault integration is required
