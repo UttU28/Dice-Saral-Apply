@@ -19,9 +19,16 @@ jobs:
   steps:
     - checkout: self
 
-- job: GetSecrets
-  displayName: 'Get Secrets from Key Vault'
-  dependsOn: Checkout
+# - job: GetSecrets
+#   displayName: 'Get Secrets from Key Vault'
+#   dependsOn: Checkout
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+
+- job: BuildAndDeploying
+  displayName: 'Build and Deploy'
+  dependsOn: GetSecrets
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -32,13 +39,6 @@ jobs:
       KeyVaultName: 'thisdicekeyvault'
       SecretsFilter: '*'
       RunAsPreJob: true
-
-- job: BuildAndDeploying
-  displayName: 'Build and Deploy'
-  dependsOn: GetSecrets
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
   - template: buildAndDeploy.yaml
     parameters:
       containerRegistry: '$(containerRegistry)'
