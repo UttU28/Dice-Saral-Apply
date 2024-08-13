@@ -19,7 +19,7 @@ parameters:
     type: string
     default: 'main'
 
-jobs:
+jobs:  # This should be at the top level, not within the parameters section.
 - job: Build
   displayName: 'Build Container Image'
   pool:
