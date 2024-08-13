@@ -20,7 +20,6 @@ data "azurerm_log_analytics_workspace" "analytics_workspace" {
 
 data "azurerm_container_app_environment" "app_environment" {
   name                = local.dicesaralapply-app-environment
-  location            = local.general-location
   resource_group_name = local.dicesaralapply-rg
 }
 
