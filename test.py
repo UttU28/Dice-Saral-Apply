@@ -1,31 +1,32 @@
-import os
 import requests
-import sys
 
-TOKEN= "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"
-OWNER= "UttU28"
-REPO= "updateSites"
-Workflow_Name= "update_index_html"
-parameter1= "sdv"
-parameter2 = "sdv"
+TOKEN = "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"
+OWNER = "UttU28"
+REPO = "updateSites"
+WORKFLOW_FILE_NAME = "update_index_html.yml"  # Change this to the actual workflow file name
 
-print( "the toke value is")
-def trigger_workflow(Workflow_Name,parameter1,parameter2):
-
-      headers = {
+def trigger_workflow(workflow_file_name, parameter1, parameter2):
+    headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {TOKEN}",
-      }
+    }
 
-      data = {
-        "event_type": Workflow_Name,
-        "client_payload": {
-          'parameter1': parameter1,
-          'parameter2': parameter2
+    data = {
+        "ref": "main",  # Specify the branch name if needed
+        "inputs": {
+            'parameter1': parameter1,
+            'parameter2': parameter2
         }
-      }
+    }
 
-      responseValue=requests.post(f"https://api.github.com/repos/{OWNER}/{REPO}/dispatches",json=data,headers=headers)
-      print(responseValue.content)
+    url = f"https://api.github.com/repos/{OWNER}/{REPO}/actions/workflows/{workflow_file_name}/dispatches"
+    
+    response = requests.post(url, json=data, headers=headers)
+    
+    if response.status_code == 204:
+        print("Workflow triggered successfully.")
+    else:
+        print(f"Failed to trigger workflow: {response.status_code}")
+        print(response.json())
 
-trigger_workflow(Workflow_Name,parameter1,parameter2)
+trigger_workflow(WORKFLOW_FILE_NAME, "sdv", "sdv")
