@@ -12,7 +12,6 @@ jobs:
 
 - job: Terraform
   displayName: 'Deploy Terraform Infrastructure'
-  dependsOn: BuildAndDeploy
   pool:
     vmImage: 'ubuntu-latest'
   steps:
