@@ -12,8 +12,8 @@ data "azurerm_key_vault_secret" "general-location" {
   key_vault_id = data.azurerm_key_vault.thiskeyvault.id
 }
 
-data "azurerm_key_vault_secret" "jobscraping-rg" {
-  name         = "jobscraping-rg"
+data "azurerm_key_vault_secret" "dicesaralapply-rg" {
+  name         = "dicesaralapply-rg"
   key_vault_id = data.azurerm_key_vault.thiskeyvault.id
 }
 
@@ -22,13 +22,13 @@ data "azurerm_key_vault_secret" "jobscraping-name" {
   key_vault_id = data.azurerm_key_vault.thiskeyvault.id
 }
 
-data "azurerm_key_vault_secret" "jobscraping-app-environment" {
-  name         = "jobscraping-app-environment"
+data "azurerm_key_vault_secret" "dicesaralapply-app-environment" {
+  name         = "dicesaralapply-app-environment"
   key_vault_id = data.azurerm_key_vault.thiskeyvault.id
 }
 
-data "azurerm_key_vault_secret" "jobscraping-log-analytics-workspace" {
-  name         = "jobscraping-log-analytics-workspace"
+data "azurerm_key_vault_secret" "dicesaralapply-log-analytics-workspace" {
+  name         = "dicesaralapply-log-analytics-workspace"
   key_vault_id = data.azurerm_key_vault.thiskeyvault.id
 }
 
@@ -45,12 +45,12 @@ data "azurerm_key_vault_secret" "acrPassword" {
 # Define local variables to store the secret values
 locals {
   general-location                    = data.azurerm_key_vault_secret.general-location.value
-  jobscraping-rg                      = data.azurerm_key_vault_secret.jobscraping-rg.value
+  dicesaralapply-rg                      = data.azurerm_key_vault_secret.dicesaralapply-rg.value
   jobscraping-name                    = data.azurerm_key_vault_secret.jobscraping-name.value
-  jobscraping-app-environment         = data.azurerm_key_vault_secret.jobscraping-app-environment.value
-  jobscraping-log-analytics-workspace = data.azurerm_key_vault_secret.jobscraping-log-analytics-workspace.value
+  dicesaralapply-app-environment         = data.azurerm_key_vault_secret.dicesaralapply-app-environment.value
+  dicesaralapply-log-analytics-workspace = data.azurerm_key_vault_secret.dicesaralapply-log-analytics-workspace.value
   acrName                             = data.azurerm_key_vault_secret.acrName.value
   acrPassword                         = data.azurerm_key_vault_secret.acrPassword.value
-  acrUrl                              = "${local.acrName}.azurecr.io/${local.jobscraping-image}:latest"
+  acrUrl                              = "${local.acrName}.azurecr.io/${local.jobscraping-name}:latest"
 }
 

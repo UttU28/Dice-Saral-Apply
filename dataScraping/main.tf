@@ -14,14 +14,14 @@ terraform {
 
 
 data "azurerm_log_analytics_workspace" "analytics_workspace" {
-  name                = local.jobscraping-log-analytics-workspace
-  resource_group_name = local.jobscraping-rg
+  name                = local.dicesaralapply-log-analytics-workspace
+  resource_group_name = local.dicesaralapply-rg
 }
 
 resource "azurerm_container_app_environment" "app_environment" {
-  name                = local.jobscraping-app-environment
+  name                = local.dicesaralapply-app-environment
   location            = local.general-location
-  resource_group_name = local.jobscraping-rg
+  resource_group_name = local.dicesaralapply-rg
 }
 
 resource "azurerm_container_app_job" "job" {
@@ -29,7 +29,7 @@ resource "azurerm_container_app_job" "job" {
   name                         = local.jobscraping-name
   location                     = local.general-location
   container_app_environment_id = azurerm_container_app_environment.app_environment.id
-  resource_group_name          = local.jobscraping-rg
+  resource_group_name          = local.dicesaralapply-rg
   replica_timeout_in_seconds   = 300
   # Job scheduling: every 20 minutes, from 7 AM to 5 PM CT
   schedule_trigger_config {
