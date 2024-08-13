@@ -1,6 +1,6 @@
 trigger:
 - main
-- none
+# - none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -17,7 +17,7 @@ variables:
 
 jobs:
 - job: Checkout
-  displayName: 'Checkout Code'
+  displayName: 'Checkout Code DATA SCRAPING'
   pool:
     vmImage: 'ubuntu-latest'
   steps:

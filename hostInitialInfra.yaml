@@ -1,5 +1,5 @@
 trigger:
-- main
+# - main
 # - none
 
 variables:
@@ -17,7 +17,7 @@ variables:
 
 jobs:
 - job: Checkout
-  displayName: 'Checkout Code'
+  displayName: 'Checkout Code INITIAL INFRA'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
