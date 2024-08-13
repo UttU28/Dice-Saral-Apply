@@ -26,6 +26,49 @@ jobs:
   steps:
     - checkout: self
 
+- job: ExtractTerraformOutput
+  displayName: 'Extract Terraform Output'
+  dependsOn: Checkout
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: AzureCLI@2
+    displayName: 'Extract Container App URL'
+    inputs:
+      azureSubscription: $(azureSubscription)
+      scriptType: bash
+      addSpnToEnvironment: true
+      scriptLocation: inlineScript
+      inlineScript: |
+        CONTAINER_APP_URL=$(az containerapp show \
+          --resource-group $(rgName) \
+          --name $(webappName) \
+          --query "properties.configuration.ingress.fqdn" \
+          --output tsv)
+        echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
+
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r $(Build.SourcesDirectory)/requirements.txt
+    displayName: 'Install dependencies'
+
+  - script: |
+      python $(Build.SourcesDirectory)/test.py $(pat_token) $(CalledWorkflow_github_account) $(CalledWorkflow_repo_github) $(calledworkflow_name) $(parameter1) $(parameter2)
+    displayName: 'Trigger the Workflow'
+    env:
+      pat_token: $(pat_token)
+    inputs:
+      CalledWorkflow_github_account: UttU28
+      CalledWorkflow_repo_github: updateSites
+      calledworkflow_name: InvokeGitHubActionsCalled
+      parameter1: $(parameter1)
+      parameter2: $(parameter2)
+
 
 # Uncomment if Key Vault integration is required
 # - job: GetSecrets
@@ -72,43 +115,3 @@ jobs:
 #     parameters:
 #       workingDirectory: 'webApp'
 
-- job: ExtractTerraformOutput
-  displayName: 'Extract Terraform Output'
-  dependsOn: Checkout
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: AzureCLI@2
-    displayName: 'Extract Container App URL'
-    inputs:
-      azureSubscription: $(azureSubscription)
-      scriptType: bash
-      addSpnToEnvironment: true
-      scriptLocation: inlineScript
-      inlineScript: |
-        CONTAINER_APP_URL=$(az containerapp show \
-          --resource-group $(rgName) \
-          --name $(webappName) \
-          --query "properties.configuration.ingress.fqdn" \
-          --output tsv)
-        echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
-
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '3.x'
-      addToPath: true
-
-  - script: |
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
-    displayName: 'Install dependencies'
-
-  - script: |
-      python $(Build.SourcesDirectory)/test.py $(pat_token) $(CalledWorkflow_github_account) $(CalledWorkflow_repo_github) $(calledworkflow_name) $(parameter1) $(parameter2)
-    displayName: 'Trigger the Workflow'
-    env:
-      pat_token: $(pat_token)
-    inputs:
-      CalledWorkflow_github_account: UttU28
-      CalledWorkflow_repo_github: updateSites
-      calledworkflow_name: InvokeGitHubActionsCalled
