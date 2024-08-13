@@ -9,7 +9,6 @@ variables:
   dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
   gitBranch: 'main'
-  webapp-name: 'dicesaralapply'
 
 jobs:
 - job: Checkout
@@ -28,7 +27,7 @@ jobs:
 
 - job: BuildAndDeploying
   displayName: 'Build and Deploy'
-  dependsOn: GetSecrets
+  dependsOn: Checkout
   pool:
     vmImage: 'ubuntu-latest'
   steps:
