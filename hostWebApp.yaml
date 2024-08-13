@@ -1,6 +1,5 @@
 trigger:
 - main
-# - none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -15,6 +14,9 @@ variables:
   gitBranch: 'main'
   webappName: 'dicesaralapply'
   rgName: 'this-dice-jobscraping-rg'
+  githubRepository: 'UttU28/updateSites'
+  githubEventType: 'update_index_html'
+  containerAppUrl: '$(CONTAINER_APP_URL)'  # Assuming this variable is set elsewhere in your pipeline
 
 jobs:
 - job: Checkout
@@ -23,35 +25,32 @@ jobs:
     vmImage: 'ubuntu-latest'
   steps:
     - checkout: self
-      clean: true
 
-    - script: |
-        # Update the index.html file
-        echo "<!-- Updated on $(date) -->" >> index.html
-      displayName: 'Update index.html'
-
-    - script: |
-        # Configure Git with user details
-        git config user.email "azuredevops@example.com"
-        git config user.name "Azure DevOps"
-
-        # Check for changes and commit if necessary
-        git add index.html
-        git commit -m "Update index.html with current date" || echo "No changes to commit"
-
-        # Verify the current branch
-        echo "Current branch: $(git branch --show-current)"
-
-        # Ensure we are on the correct branch
-        git checkout main
-
-        # Push changes to the GitHub repository
-        git push https://$(GITHUB_TOKEN)@github.com/UttU28/Dice-WebView.git main
-      displayName: 'Commit and Push Changes'
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          $githubToken = $env:GITHUB_TOKEN
+          $repository = "$(githubRepository)"
+          $eventType = "$(githubEventType)"
+          $containerAppUrl = "$(containerAppUrl)"
+        
+          $uri = "https://api.github.com/repos/$repository/dispatches"
+          $headers = @{
+            "Authorization" = "token $githubToken"
+            "Accept" = "application/vnd.github.v3+json"
+          }
+        
+          $body = @{
+            "event_type" = $eventType
+            "client_payload" = @{
+              "url" = $containerAppUrl
+            }
+          } | ConvertTo-Json
+        
+          Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
       env:
         GITHUB_TOKEN: $(GITHUB_TOKEN)
-
-
 
 # Uncomment if Key Vault integration is required
 # - job: GetSecrets
