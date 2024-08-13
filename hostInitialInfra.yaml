@@ -1,19 +1,6 @@
 trigger:
-# - main
-- none
-
-variables:
-  azureSubscription: 'dicePipeline'
-  containerRegistry: 'dockerSC'
-  acrName: 'thisacr'
-  imageName: 'dicedatascraping'
-  imageTag: 'latest'
-  imageRepository: '$(acrName).azurecr.io/$(imageName)'
-  artifactName: '$(imageName)_ARTIFACT'
-  dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
-  gitRepoUrl: 'https://github.com/UttU28/Dice-JobScraping.git'
-  gitBranch: 'main'
-
+- main
+# - none
 
 jobs:
 - job: Checkout

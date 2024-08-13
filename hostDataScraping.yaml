@@ -1,6 +1,6 @@
 trigger:
-- main
-# - none
+# - main
+- none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -45,7 +45,7 @@ jobs:
 - job: Terraform
   displayName: 'Deploy Terraform Infrastructure'
   dependsOn: Checkout
-  # BuildAndDeploying
+  # dependsOn: BuildAndDeploying
   pool:
     vmImage: 'ubuntu-latest'
   steps:
