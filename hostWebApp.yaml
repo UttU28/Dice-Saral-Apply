@@ -22,7 +22,29 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - checkout: self
+    - checkout: self
+      clean: true
+
+    - script: |
+        # Update the index.html file
+        echo "<!-- Updated on $(date) -->" >> index.html
+      displayName: 'Update index.html'
+
+    - script: |
+        # Configure Git with user details
+        git config user.email "utsavmaan28@gmail.com"
+        git config user.name "UttU28"
+
+        # Check for changes and commit if necessary
+        git add index.html
+        git commit -m "Update index.html with current date" || echo "No changes to commit"
+
+        # Push changes to the GitHub repository
+        git push https://$(GITHUB_TOKEN)@github.com/UttU28/updateSites.git main
+      displayName: 'Commit and Push Changes'
+      env:
+        GITHUB_TOKEN: $(GITHUB_TOKEN)
+
 
 # Uncomment if Key Vault integration is required
 # - job: GetSecrets
@@ -69,52 +91,52 @@ jobs:
 #     parameters:
 #       workingDirectory: 'webApp'
 
-- job: ExtractTerraformOutput
-  displayName: 'Extract Terraform Output'
-  dependsOn: Checkout
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: AzureCLI@2
-    displayName: 'Extract Container App URL'
-    inputs:
-      azureSubscription: $(azureSubscription)
-      scriptType: bash
-      addSpnToEnvironment: true
-      scriptLocation: inlineScript
-      inlineScript: |
-        CONTAINER_APP_URL=$(az containerapp show \
-          --resource-group $(rgName) \
-          --name $(webappName) \
-          --query "properties.configuration.ingress.fqdn" \
-          --output tsv)
-        echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
+# - job: ExtractTerraformOutput
+#   displayName: 'Extract Terraform Output'
+#   dependsOn: Checkout
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - task: AzureCLI@2
+#     displayName: 'Extract Container App URL'
+#     inputs:
+#       azureSubscription: $(azureSubscription)
+#       scriptType: bash
+#       addSpnToEnvironment: true
+#       scriptLocation: inlineScript
+#       inlineScript: |
+#         CONTAINER_APP_URL=$(az containerapp show \
+#           --resource-group $(rgName) \
+#           --name $(webappName) \
+#           --query "properties.configuration.ingress.fqdn" \
+#           --output tsv)
+#         echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
 
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        $githubToken = $env:GITHUB_TOKEN
-        $repository = "updateSites"
-        $branch = "main"
-        $containerAppUrl = $env:CONTAINER_APP_URL
+#   - task: PowerShell@2
+#     inputs:
+#       targetType: 'inline'
+#       script: |
+#         $githubToken = $env:GITHUB_TOKEN
+#         $repository = "updateSites"
+#         $branch = "main"
+#         $containerAppUrl = $env:CONTAINER_APP_URL
         
-        $uri = "https://api.github.com/repos/$repository/dispatches"
-        $headers = @{
-          "Authorization" = "token $githubToken"
-          "Accept" = "application/vnd.github.v3+json"
-        }
+#         $uri = "https://api.github.com/repos/$repository/dispatches"
+#         $headers = @{
+#           "Authorization" = "token $githubToken"
+#           "Accept" = "application/vnd.github.v3+json"
+#         }
         
-        $body = @{
-          "event_type" = "update_index_html"
-          "client_payload" = @{
-            "url" = $containerAppUrl
-          }
-        } | ConvertTo-Json
+#         $body = @{
+#           "event_type" = "update_index_html"
+#           "client_payload" = @{
+#             "url" = $containerAppUrl
+#           }
+#         } | ConvertTo-Json
         
-        Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
-      env:
-        GITHUB_TOKEN: $(GITHUB_TOKEN)
+#         Invoke-RestMethod -Uri $uri -Method Post -Headers $headers -Body $body
+#       env:
+#         GITHUB_TOKEN: $(GITHUB_TOKEN)
 
   # Uncomment if Python tasks are required
   # - task: UsePythonVersion@0
