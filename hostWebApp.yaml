@@ -66,6 +66,27 @@ jobs:
 #     parameters:
 #       workingDirectory: 'webApp'
 
+- job: ExtractTerraformOutput
+  displayName: 'Extract Terraform Output'
+  # dependsOn: Terraform
+  dependsOn: Checkout
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: AzureCLI@2
+    displayName: 'Extract Terraform Output'
+    inputs:
+      azureSubscription: $(azureSubscription)
+      scriptType: bash
+      addSpnToEnvironment: true
+      scriptLocation: inlineScript
+      inlineScript: |
+        CONTAINER_APP_URL=$(az containerapp show \
+          --resource-group $(rgName) \
+          --name $(webappName) \
+          --query "properties.configuration.ingress.fqdn" \
+          --output tsv)
+
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
