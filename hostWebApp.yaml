@@ -38,12 +38,6 @@ jobs:
       SecretsFilter: '*'
       RunAsPreJob: true
 
-- job: BuildAndDeploying
-  displayName: 'Build and Deploy'
-  dependsOn: GetSecrets
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
   - template: buildAndDeploy.yaml
     parameters:
       containerRegistry: '$(containerRegistry)'
