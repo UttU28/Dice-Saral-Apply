@@ -1,20 +1,14 @@
 trigger:
-- main
-# - none
+# - main
+- none
 
 variables:
   azureSubscription: 'dicePipeline'
   containerRegistry: 'dockerSC'
-  acrName: 'thisacr'
-  imageName: 'dicewebview'
   imageTag: 'latest'
-  imageRepository: '$(acrName).azurecr.io/$(imageName)'
-  artifactName: '$(imageName)_ARTIFACT'
   dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-WebView.git'
   gitBranch: 'main'
-  webappName: 'dicesaralapply'
-  rgName: 'this-dice-jobscraping-rg'
 
 jobs:
 - job: Checkout
@@ -48,11 +42,11 @@ jobs:
     parameters:
       containerRegistry: '$(containerRegistry)'
       acrName: '$(acrName)'
-      imageName: '$(imageName)'
+      imageName: '$(webapp-name)'
       imageTag: '$(imageTag)'
       dockerfilePath: '$(dockerfilePath)'
-      artifactName: '$(artifactName)'
-      imageRepository: '$(imageRepository)'
+      artifactName: '$(webapp-name)_ARTIFACT'
+      imageRepository: '$(acrName).azurecr.io/$(webapp-name)'
       gitRepoUrl: '$(gitRepoUrl)'
       gitBranch: '$(gitBranch)'
 
@@ -82,8 +76,8 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         CONTAINER_APP_URL=$(az containerapp show \
-          --resource-group $(rgName) \
-          --name $(webappName) \
+          --resource-group $(dicesaralapply-rg) \
+          --name $(webapp-name) \
           --query "properties.configuration.ingress.fqdn" \
           --output tsv)
         echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
