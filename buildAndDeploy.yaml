@@ -22,8 +22,6 @@ parameters:
 jobs:  # This should be at the top level, not within the parameters section.
 - job: Build
   displayName: 'Build Container Image'
-  pool:
-    vmImage: 'ubuntu-latest'
   steps:
   - task: Bash@3
     displayName: 'Clone Git Repository'
@@ -69,8 +67,6 @@ jobs:  # This should be at the top level, not within the parameters section.
 - job: DeployToACR
   displayName: 'Deploy to Azure Container Registry'
   dependsOn: Build
-  pool:
-    vmImage: 'ubuntu-latest'
   steps:
   - task: DownloadPipelineArtifact@2
     inputs:
