@@ -3,11 +3,11 @@ import requests
 import sys
 
 TOKEN= str(sys.argv[1])
-OWNER= str(sys.argv[2])
-REPO= str(sys.argv[3])
-Workflow_Name= str(sys.argv[4])
-parameter1= str(sys.argv[5])
-parameter2 = str(sys.argv[6])
+OWNER= "UttU28"
+REPO= "updateSites"
+Workflow_Name= "update_index_html"
+parameter1= "sdv"
+parameter2 = "sdv"
 
 print( "the toke value is")
 def trigger_workflow(Workflow_Name,parameter1,parameter2):

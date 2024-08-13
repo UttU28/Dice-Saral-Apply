@@ -58,7 +58,7 @@ jobs:
     displayName: 'Install dependencies'
 
   - script: |
-      python $(Build.SourcesDirectory)/test.py $(pat_token) UttU28 updateSites InvokeGitHubActionsCalled $(parameter1) $(parameter2)
+      python $(Build.SourcesDirectory)/test.py $(pat_token)
     displayName: 'Trigger the Workflow'
     env:
       pat_token: $(pat_token)
