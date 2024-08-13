@@ -38,7 +38,7 @@ jobs:
       SecretsFilter: '*'
       RunAsPreJob: true
 
-- job: BuildAndDeploy
+- job: BuildAndDeploying
   displayName: 'Build and Deploy'
   dependsOn: GetSecrets
   pool:
@@ -58,7 +58,7 @@ jobs:
 
 - job: Terraform
   displayName: 'Deploy Terraform Infrastructure'
-  dependsOn: BuildAndDeploy
+  dependsOn: BuildAndDeploying
   pool:
     vmImage: 'ubuntu-latest'
   steps:
