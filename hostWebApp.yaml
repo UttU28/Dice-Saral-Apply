@@ -33,7 +33,7 @@ jobs:
           $githubToken = $env:GITHUB_TOKEN
           $repository = "$(githubRepository)"
           $eventType = "$(githubEventType)"
-          $containerAppUrl = "$(containerAppUrl)"
+          $containerAppUrl = "addDollarSignHereForMakingItVar(containerAppUrl)"
         
           $uri = "https://api.github.com/repos/$repository/dispatches"
           $headers = @{
