@@ -29,7 +29,7 @@ jobs:
     inputs:
       azureSubscription: '$(azureSubscription)'
       KeyVaultName: 'thisdicekeyvault'
-      SecretsFilter: '*'the input
+      SecretsFilter: '*'
   - template: buildAndDeploy.yaml
     parameters:
       containerRegistry: '$(containerRegistry)'
