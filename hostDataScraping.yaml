@@ -1,30 +1,25 @@
 trigger:
-# - main
-- none
+- main
+# - none
 
 variables:
   azureSubscription: 'dicePipeline'
   containerRegistry: 'dockerSC'
-  acrName: 'thisacr'
-  imageName: 'dicedatascraping'
   imageTag: 'latest'
-  imageRepository: '$(acrName).azurecr.io/$(imageName)'
-  artifactName: '$(imageName)_ARTIFACT'
   dockerfilePath: '$(Build.SourcesDirectory)/repo/Dockerfile'
   gitRepoUrl: 'https://github.com/UttU28/Dice-JobScraping.git'
   gitBranch: 'main'
 
-
 jobs:
 - job: Checkout
-  displayName: 'Checkout Code DATA SCRAPING'
+  displayName: 'Checkout Code JOBSCRAPING'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
     - checkout: self
 
-- job: GetSecrets
-  displayName: 'Get Secrets from Key Vault'
+- job: BuildAndDeploying
+  displayName: 'Build and Deploy'
   dependsOn: Checkout
   pool:
     vmImage: 'ubuntu-latest'
@@ -34,24 +29,16 @@ jobs:
     inputs:
       azureSubscription: '$(azureSubscription)'
       KeyVaultName: 'thisdicekeyvault'
-      SecretsFilter: '*'
-      RunAsPreJob: true
-
-- job: BuildAndDeploying
-  displayName: 'Build and Deploy'
-  dependsOn: GetSecrets
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
+      SecretsFilter: '*'the input
   - template: buildAndDeploy.yaml
     parameters:
       containerRegistry: '$(containerRegistry)'
       acrName: '$(acrName)'
-      imageName: '$(imageName)'
+      imageName: '$(jobscraping-name)'
       imageTag: '$(imageTag)'
       dockerfilePath: '$(dockerfilePath)'
-      artifactName: '$(artifactName)'
-      imageRepository: '$(imageRepository)'
+      artifactName: '$(jobscraping-name)_ARTIFACT'
+      imageRepository: '$(acrName).azurecr.io/$(jobscraping-name)'
       gitRepoUrl: '$(gitRepoUrl)'
       gitBranch: '$(gitBranch)'
 
@@ -63,4 +50,4 @@ jobs:
   steps:
   - template: terraformTasks.yaml
     parameters:
-      workingDirectory: 'dataScraping'
+      workingDirectory: 'webApp'

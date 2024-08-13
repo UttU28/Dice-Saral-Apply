@@ -1,6 +1,6 @@
 trigger:
-- main
-# - none
+# - main
+- none
 
 variables:
   azureSubscription: 'dicePipeline'
@@ -18,13 +18,6 @@ jobs:
   steps:
     - checkout: self
 
-# - job: GetSecrets
-#   displayName: 'Get Secrets from Key Vault'
-#   dependsOn: Checkout
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-
 - job: BuildAndDeploying
   displayName: 'Build and Deploy'
   dependsOn: Checkout
@@ -37,7 +30,6 @@ jobs:
       azureSubscription: '$(azureSubscription)'
       KeyVaultName: 'thisdicekeyvault'
       SecretsFilter: '*'
-      RunAsPreJob: true
   - template: buildAndDeploy.yaml
     parameters:
       containerRegistry: '$(containerRegistry)'
