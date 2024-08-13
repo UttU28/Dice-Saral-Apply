@@ -58,10 +58,8 @@ jobs:
     displayName: 'Install dependencies'
 
   - script: |
-      python $(Build.SourcesDirectory)/test.py $(pat_token)
+      python $(Build.SourcesDirectory)/test.py
     displayName: 'Trigger the Workflow'
-    env:
-      pat_token: $(pat_token)
 
 
 # Uncomment if Key Vault integration is required

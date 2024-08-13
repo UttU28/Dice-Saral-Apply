@@ -2,7 +2,7 @@ import os
 import requests
 import sys
 
-TOKEN= str(sys.argv[1])
+TOKEN= "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"
 OWNER= "UttU28"
 REPO= "updateSites"
 Workflow_Name= "update_index_html"
