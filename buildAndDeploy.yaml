@@ -19,10 +19,7 @@ parameters:
     type: string
     default: 'main'
 
-jobs:  # This should be at the top level, not within the parameters section.
-- job: Build
-  displayName: 'Build Container Image'
-  steps:
+steps:  # This should be at the top level, not within the parameters section.
   - task: Bash@3
     displayName: 'Clone Git Repository'
     inputs:
@@ -64,10 +61,6 @@ jobs:  # This should be at the top level, not within the parameters section.
       artifact: ${{ parameters.artifactName }}
       publishLocation: 'pipeline'
 
-- job: DeployToACR
-  displayName: 'Deploy to Azure Container Registry'
-  dependsOn: Build
-  steps:
   - task: DownloadPipelineArtifact@2
     inputs:
       buildType: 'current'
