@@ -18,7 +18,7 @@ data "azurerm_log_analytics_workspace" "analytics_workspace" {
   resource_group_name = local.dicesaralapply-rg
 }
 
-resource "azurerm_container_app_environment" "app_environment" {
+data "azurerm_container_app_environment" "app_environment" {
   name                = local.dicesaralapply-app-environment
   location            = local.general-location
   resource_group_name = local.dicesaralapply-rg
@@ -28,7 +28,7 @@ resource "azurerm_container_app_job" "job" {
 
   name                         = local.jobscraping-name
   location                     = local.general-location
-  container_app_environment_id = azurerm_container_app_environment.app_environment.id
+  container_app_environment_id = data.azurerm_container_app_environment.app_environment.id
   resource_group_name          = local.dicesaralapply-rg
   replica_timeout_in_seconds   = 300
   # Job scheduling: every 20 minutes, from 7 AM to 5 PM CT
