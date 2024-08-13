@@ -10,6 +10,7 @@ variables:
   gitRepoUrl: 'https://github.com/UttU28/Dice-JobScraping.git'
   gitBranch: 'main'
 
+
 jobs:
 - job: Checkout
   displayName: 'Checkout Code JOBSCRAPING'
