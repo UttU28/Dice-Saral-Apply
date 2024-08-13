@@ -40,24 +40,21 @@ jobs:
       command: build
       Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
-      tags: ${{ parameters.imageTag }}
+      tags: |
+        ${{ parameters.imageTag }}
+        ${{ parameters.imageTag }}art
 
   - task: Docker@2
-    displayName: 'Build Docker Image with Another Tag'
+    displayName: 'Save Docker Image'
     inputs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
-      command: build
-      Dockerfile: '${{ parameters.dockerfilePath }}'
-      buildContext: 'repo'
-      tags: ${{ parameters.imageTag }}art
-
-  - task: Bash@3
-    displayName: 'Save Docker Image'
-    inputs:
-      targetType: 'inline'
-      script: |
-        docker save ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art -o $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
+      command: save
+      imageName: '${{ parameters.imageName }}'
+      tags: |
+        ${{ parameters.imageTag }}
+        ${{ parameters.imageTag }}art
+      outputPath: '$(Pipeline.Workspace)/${{ parameters.imageName }}.tar'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish the Artifact'
@@ -92,6 +89,6 @@ jobs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       command: push
-      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+      Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
       tags: ${{ parameters.imageTag }}
