@@ -42,22 +42,22 @@ jobs:
 #       gitRepoUrl: '$(gitRepoUrl)'
 #       gitBranch: '$(gitBranch)'
 
-# - job: Terraform
-#   displayName: 'Deploy Terraform Infrastructure'
-#   dependsOn: Checkout
-#   # dependsOn: BuildAndDeploying
-#   pool:
-#     vmImage: 'ubuntu-latest'
-#   steps:
-#   - template: terraformTasks.yaml
-#     parameters:
-#       workingDirectory: 'webApp'
+- job: Terraform
+  displayName: 'Deploy Terraform Infrastructure'
+  dependsOn: Checkout
+  # dependsOn: BuildAndDeploying
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - template: terraformTasks.yaml
+    parameters:
+      workingDirectory: 'webApp'
 
 
 - job: ExtractTerraformOutput
   displayName: 'Extract Terraform Output'
-  # dependsOn: Terraform
-  dependsOn: Checkout
+  dependsOn: Terraform
+  # dependsOn: Checkout
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -75,10 +75,8 @@ jobs:
       addSpnToEnvironment: true
       scriptLocation: inlineScript
       inlineScript: |
-        WEBAPP_NAME=$(webappName)
-        RESOURCE_GROUP=$(resourceGroup)
 
-        az containerapp ingress enable -n dicesaralapply -g dicesaralapply-rg --type external --allow-insecure --target-port 50505 --transport auto
+        az containerapp ingress enable -n '$(webapp-name)' -g '$(dicesaralapply-rg)' --type external --allow-insecure --target-port 50505 --transport auto
 
         CONTAINER_APP_URL=$(az containerapp show \
           --resource-group $(dicesaralapply-rg) \
