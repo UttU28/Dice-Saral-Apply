@@ -15,7 +15,7 @@ steps:
   displayName: Install Terraform
 
 - task: AzureCLI@2
-  displayName: "Terraform INIT"
+  displayName: "Terraform INIT and PLAN"
   inputs:
     azureSubscription: dicePipeline
     scriptType: bash
@@ -29,16 +29,7 @@ steps:
 
       cd ${{ parameters.workingDirectory }}
       terraform init
-
-- task: TerraformCLI@1
-  displayName: 'Terraform Plan'
-  inputs:
-    command: 'plan'
-    workingDirectory: ${{ parameters.workingDirectory }}
-    azureSubscription: 'dicePipeline'
-    environmentServiceName: 'dicePipeline'
-    runAzLogin: true
-    allowTelemetryCollection: true
+      terraform plan
 
 # - task: TerraformCLI@1
 #   displayName: 'Terraform Apply'
