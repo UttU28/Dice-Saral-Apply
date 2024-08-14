@@ -32,55 +32,56 @@ steps:  # This should be at the top level, not within the parameters section.
     inputs:
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
-      command: build
+      # command: build
+      command: buildAndDeply
       Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
       tags: ${{ parameters.imageTag }}
 
-  - task: Docker@2
-    displayName: 'Build Docker Image with Another Tag'
-    inputs:
-      containerRegistry: ${{ parameters.containerRegistry }}
-      repository: ${{ parameters.imageName }}
-      command: build
-      Dockerfile: '${{ parameters.dockerfilePath }}'
-      buildContext: 'repo'
-      tags: ${{ parameters.imageTag }}art
+  # - task: Docker@2
+  #   displayName: 'Build Docker Image with Another Tag'
+  #   inputs:
+  #     containerRegistry: ${{ parameters.containerRegistry }}
+  #     repository: ${{ parameters.imageName }}
+  #     command: build
+  #     Dockerfile: '${{ parameters.dockerfilePath }}'
+  #     buildContext: 'repo'
+  #     tags: ${{ parameters.imageTag }}art
 
-  - task: Bash@3
-    displayName: 'Save Docker Image'
-    inputs:
-      targetType: 'inline'
-      script: |
-        docker save ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art -o $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
+  # - task: Bash@3
+  #   displayName: 'Save Docker Image'
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       docker save ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art -o $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
 
-  - task: PublishPipelineArtifact@1
-    displayName: 'Publish the Artifact'
-    inputs:
-      targetPath: '$(Pipeline.Workspace)/${{ parameters.imageName }}.tar'
-      artifact: ${{ parameters.artifactName }}
-      publishLocation: 'pipeline'
+  # - task: PublishPipelineArtifact@1
+  #   displayName: 'Publish the Artifact'
+  #   inputs:
+  #     targetPath: '$(Pipeline.Workspace)/${{ parameters.imageName }}.tar'
+  #     artifact: ${{ parameters.artifactName }}
+  #     publishLocation: 'pipeline'
 
-  - task: DownloadPipelineArtifact@2
-    inputs:
-      buildType: 'current'
-      artifact: ${{ parameters.artifactName }}
-      targetPath: '$(Pipeline.Workspace)'
+  # - task: DownloadPipelineArtifact@2
+  #   inputs:
+  #     buildType: 'current'
+  #     artifact: ${{ parameters.artifactName }}
+  #     targetPath: '$(Pipeline.Workspace)'
 
-  - task: Bash@3
-    displayName: 'Load Docker Image'
-    inputs:
-      targetType: 'inline'
-      script: |
-        docker load --input $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
-        docker tag ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art ${{ parameters.imageRepository }}:${{ parameters.imageTag }}
+  # - task: Bash@3
+  #   displayName: 'Load Docker Image'
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |
+  #       docker load --input $(Pipeline.Workspace)/${{ parameters.imageName }}.tar
+  #       docker tag ${{ parameters.imageRepository }}:${{ parameters.imageTag }}art ${{ parameters.imageRepository }}:${{ parameters.imageTag }}
 
-  - task: Docker@2
-    displayName: 'Push Docker Image to ACR'
-    inputs:
-      containerRegistry: ${{ parameters.containerRegistry }}
-      repository: ${{ parameters.imageName }}
-      command: push
-      Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
-      buildContext: 'repo'
-      tags: ${{ parameters.imageTag }}
+  # - task: Docker@2
+  #   displayName: 'Push Docker Image to ACR'
+  #   inputs:
+  #     containerRegistry: ${{ parameters.containerRegistry }}
+  #     repository: ${{ parameters.imageName }}
+  #     command: push
+  #     Dockerfile: 'repo/${{ parameters.dockerfilePath }}'
+  #     buildContext: 'repo'
+  #     tags: ${{ parameters.imageTag }}
