@@ -56,7 +56,8 @@ jobs:
 
 - job: ExtractTerraformOutput
   displayName: 'Extract Terraform Output'
-  dependsOn: Terraform
+  # dependsOn: Terraform
+  dependsOn: Checkout
   pool:
     vmImage: 'ubuntu-latest'
   steps:
