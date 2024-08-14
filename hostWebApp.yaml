@@ -72,7 +72,7 @@ jobs:
         WEBAPP_NAME=$(webappName)
         RESOURCE_GROUP=$(resourceGroup)
 
-        az containerapp ingress enable -n WEBAPP_NAME -g RESOURCE_GROUP --type external --allow-insecure --target-port 50505 --transport auto
+        az containerapp ingress enable -n $WEBAPP_NAME -g $RESOURCE_GROUP --type external --allow-insecure --target-port 50505 --transport auto
 
         CONTAINER_APP_URL=$(az containerapp show \
           --resource-group $(dicesaralapply-rg) \
