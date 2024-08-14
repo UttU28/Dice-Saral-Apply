@@ -61,6 +61,12 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
+  - task: AzureKeyVault@2
+    displayName: 'Get Secrets from Key Vault'
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      KeyVaultName: 'thisdicekeyvault'
+      SecretsFilter: '*'
   - task: AzureCLI@2
     displayName: 'Extract Container App URL'
     inputs:
