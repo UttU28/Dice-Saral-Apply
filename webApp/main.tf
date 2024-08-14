@@ -71,8 +71,8 @@ resource "azurerm_container_app" "dicesaralapply" {
   provisioner "local-exec" {
     command = <<EOT
       az containerapp ingress enable \
-        --name ${self.name} \
-        --resource-group ${self.resource_group_name} \
+        --name ${local.webapp-name} \
+        --resource-group ${local.dicesaralapply-rg} \
         --type external \
         --target-port 50505 \
         --transport auto \
