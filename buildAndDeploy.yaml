@@ -33,7 +33,7 @@ steps:  # This should be at the top level, not within the parameters section.
       containerRegistry: ${{ parameters.containerRegistry }}
       repository: ${{ parameters.imageName }}
       # command: build
-      command: buildAndDeply
+      command: buildAndPush
       Dockerfile: '${{ parameters.dockerfilePath }}'
       buildContext: 'repo'
       tags: ${{ parameters.imageTag }}
