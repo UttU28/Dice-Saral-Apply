@@ -54,34 +54,34 @@ jobs:
       workingDirectory: 'webApp'
 
 
-- job: ExtractTerraformOutput
-  displayName: 'Extract Terraform Output'
-  dependsOn: Terraform
-  # dependsOn: Checkout
-  pool:
-    vmImage: 'ubuntu-latest'
-  steps:
-  - task: AzureKeyVault@2
-    displayName: 'Get Secrets from Key Vault'
-    inputs:
-      azureSubscription: '$(azureSubscription)'
-      KeyVaultName: 'thisdicekeyvault'
-      SecretsFilter: '*'
-  - task: AzureCLI@2
-    displayName: 'Extract Container App URL'
-    inputs: 
-      azureSubscription: $(azureSubscription)
-      scriptType: bash
-      addSpnToEnvironment: true
-      scriptLocation: inlineScript
-      inlineScript: |
+# - job: ExtractTerraformOutput
+#   displayName: 'Extract Terraform Output'
+#   dependsOn: Terraform
+#   # dependsOn: Checkout
+#   pool:
+#     vmImage: 'ubuntu-latest'
+#   steps:
+#   - task: AzureKeyVault@2
+#     displayName: 'Get Secrets from Key Vault'
+#     inputs:
+#       azureSubscription: '$(azureSubscription)'
+#       KeyVaultName: 'thisdicekeyvault'
+#       SecretsFilter: '*'
+#   - task: AzureCLI@2
+#     displayName: 'Extract Container App URL'
+#     inputs: 
+#       azureSubscription: $(azureSubscription)
+#       scriptType: bash
+#       addSpnToEnvironment: true
+#       scriptLocation: inlineScript
+#       inlineScript: |
 
-        az containerapp ingress enable -n '$(webapp-name)' -g '$(dicesaralapply-rg)' --type external --allow-insecure --target-port 50505 --transport auto
+#         az containerapp ingress enable -n '$(webapp-name)' -g '$(dicesaralapply-rg)' --type external --allow-insecure --target-port 50505 --transport auto
 
-        CONTAINER_APP_URL=$(az containerapp show \
-          --resource-group $(dicesaralapply-rg) \
-          --name $(webapp-name) \
-          --query "properties.configuration.ingress.fqdn" \
-          --output tsv)
+#         CONTAINER_APP_URL=$(az containerapp show \
+#           --resource-group $(dicesaralapply-rg) \
+#           --name $(webapp-name) \
+#           --query "properties.configuration.ingress.fqdn" \
+#           --output tsv)
 
-        echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
+#         echo "##vso[task.setvariable variable=CONTAINER_APP_URL]$CONTAINER_APP_URL"
