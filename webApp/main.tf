@@ -70,6 +70,7 @@ resource "azurerm_container_app" "dicesaralapply" {
 
   provisioner "local-exec" {
     command = <<EOT
+      sleep 60
       az containerapp ingress enable \
         --name ${local.webapp-name} \
         --resource-group ${local.dicesaralapply-rg} \
